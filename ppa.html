@@ -8,8 +8,6 @@
 <script src="https://cdn.tailwindcss.com"></script>
 
 <!-- Direct PDF libraries: NO browser print dialog -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
 <style>
   html { scroll-behavior:smooth; }
@@ -154,7 +152,7 @@
           Chicks Placed / कुल चूजे
         </label>
         <input id="chicksPlaced" type="number" min="1" step="1"
-               placeholder="Enter number of chicks — e.g. 5000"
+               placeholder="Enter number of chicks"
                class="input-box w-full rounded-xl border border-slate-300 px-4 py-3 text-base outline-none focus:border-green-600 focus:ring-2 focus:ring-green-100">
         <p class="text-xs text-slate-500 mt-1">Enter number / संख्या डालें — e.g. 5000</p>
       </div>
@@ -164,7 +162,7 @@
           Mortality / Dead Birds / मृत पक्षी
         </label>
         <input id="mortality" type="number" min="0" step="1"
-               placeholder="Enter dead birds — e.g. 150"
+               placeholder="Enter dead birds"
                class="input-box w-full rounded-xl border border-slate-300 px-4 py-3 text-base outline-none focus:border-green-600 focus:ring-2 focus:ring-green-100">
         <p class="text-xs text-slate-500 mt-1">Enter dead birds / मृत पक्षी डालें — e.g. 150</p>
       </div>
@@ -174,7 +172,7 @@
           Feed Bags / दाने की बोरी
         </label>
         <input id="feedBags" type="number" min="0" step="0.01"
-               placeholder="Enter number of bags — e.g. 310"
+               placeholder="Enter number of bags"
                class="input-box w-full rounded-xl border border-slate-300 px-4 py-3 text-base outline-none focus:border-green-600 focus:ring-2 focus:ring-green-100">
         <p class="text-xs text-slate-500 mt-1">Enter bags consumed / बोरी की संख्या — e.g. 310</p>
       </div>
@@ -185,11 +183,11 @@
         </label>
         <div class="relative">
           <input id="bagWeight" type="number" min="0.01" step="0.01"
-                 placeholder="Enter bag weight — e.g. 50"
+                 placeholder="Enter bag weight"
                  class="input-box w-full rounded-xl border border-slate-300 px-4 py-3 pr-14 text-base outline-none focus:border-green-600 focus:ring-2 focus:ring-green-100">
           <span class="absolute right-4 top-3.5 text-sm text-slate-500">Kg</span>
         </div>
-        <p class="text-xs text-slate-500 mt-1">Enter bag weight / बोरी का वजन — e.g. 50</p>
+        <p class="text-xs text-slate-500 mt-1">Enter bag weight / बोरी का वजन — e.g. 50 / 45 / 40</p>
       </div>
 
       <div>
@@ -198,11 +196,11 @@
         </label>
         <div class="relative">
           <input id="totalBodyWeight" type="number" min="0.01" step="0.01"
-                 placeholder="Enter total body weight — e.g. 10185"
+                 placeholder="Enter total body weight"
                  class="input-box w-full rounded-xl border border-slate-300 px-4 py-3 pr-14 text-base outline-none focus:border-green-600 focus:ring-2 focus:ring-green-100">
           <span class="absolute right-4 top-3.5 text-sm text-slate-500">Kg</span>
         </div>
-        <p class="text-xs text-slate-500 mt-1">Enter total sold weight / कुल वजन — e.g. 10185</p>
+        <p class="text-xs text-slate-500 mt-1">Enter total sold body weight / कुल वजन — e.g. 10185</p>
       </div>
 
       <div>
@@ -211,7 +209,7 @@
         </label>
         <div class="relative">
           <input id="ageDays" type="number" min="1" step="1"
-                 placeholder="Enter batch age — e.g. 38"
+                 placeholder="Enter batch age"
                  class="input-box w-full rounded-xl border border-slate-300 px-4 py-3 pr-16 text-base outline-none focus:border-green-600 focus:ring-2 focus:ring-green-100">
           <span class="absolute right-4 top-3.5 text-sm text-slate-500">Days</span>
         </div>
@@ -224,7 +222,7 @@
         </label>
         <div class="relative">
           <input id="baseGC" type="number" min="0" step="0.01"
-                 placeholder="Enter base GC — e.g. 7.50"
+                 placeholder="Enter base GC"
                  class="input-box w-full rounded-xl border border-slate-300 px-4 py-3 pl-8 text-base outline-none focus:border-green-600 focus:ring-2 focus:ring-green-100">
           <span class="absolute left-4 top-3.5 text-sm text-slate-500">₹</span>
         </div>
@@ -236,7 +234,7 @@
           Standard Target FCR / मानक FCR
         </label>
         <input id="targetFCR" type="number" min="0.01" step="0.01"
-               placeholder="Enter target FCR — e.g. 1.60"
+               placeholder="Enter target FCR"
                class="input-box w-full rounded-xl border border-slate-300 px-4 py-3 text-base outline-none focus:border-green-600 focus:ring-2 focus:ring-green-100">
         <p class="text-xs text-slate-500 mt-1">Benchmark FCR / मानक — e.g. 1.60</p>
       </div>
@@ -247,7 +245,7 @@
         </label>
         <div class="relative">
           <input id="ratePerPoint" type="number" min="0" step="0.01"
-                 placeholder="Enter rate — e.g. 0.10"
+                 placeholder="Enter rate"
                  class="input-box w-full rounded-xl border border-slate-300 px-4 py-3 pl-8 text-base outline-none focus:border-green-600 focus:ring-2 focus:ring-green-100">
           <span class="absolute left-4 top-3.5 text-sm text-slate-500">₹</span>
         </div>
@@ -479,7 +477,7 @@
   </div>
 
   <div class="pdf-footer">
-    <span>Contract Poultry Farming Performance Calculator</span>
+    <span>Contract Poultry Farming Performance Calculator || Developed by Akash</span>
     <span>Computer Generated Statement</span>
   </div>
 </div>
@@ -778,100 +776,149 @@
     $("pFinalPayout").textContent = money(d.finalPayout);
   }
 
-  async function downloadPDF() {
-    let d = calculate(false);
-    if (!d) return;
+  /*
+     DIRECT PDF GENERATOR
+     --------------------
+     This version does NOT use jsPDF/html2canvas/CDN/internet.
+     It creates a real PDF file in the browser and downloads it directly.
+     Therefore it also works on localhost/offline environments where CDN
+     libraries are blocked.
+  */
+  function pdfEscape(text) {
+    return String(text)
+      .replace(/\\/g, "\\\\")
+      .replace(/\(/g, "\\(")
+      .replace(/\)/g, "\\)");
+  }
 
-    if (!window.jspdf || !window.html2canvas) {
-      alert("PDF library load nahi hui. Internet connection check karke page refresh karein.");
-      return;
+  function makePdfPage(lines) {
+    const content = [];
+    content.push("BT");
+    content.push("/F1 18 Tf");
+    content.push("50 800 Td");
+    content.push("(Contract Poultry Farming) Tj");
+    content.push("/F1 11 Tf");
+    content.push("0 -22 Td");
+    content.push("(Performance and Payout Statement) Tj");
+    content.push("0 -30 Td");
+
+    lines.forEach((line, index) => {
+      if (index > 0) content.push("0 -19 Td");
+      content.push("(" + pdfEscape(line) + ") Tj");
+    });
+
+    content.push("ET");
+    return content.join("\n");
+  }
+
+  function createSimplePdf(pageLines) {
+    const objects = [];
+    const add = (obj) => { objects.push(obj); return objects.length; };
+
+    const catalogId = add("<< /Type /Catalog /Pages 2 0 R >>");
+    const pagesId = add("<< /Type /Pages /Kids [3 0 R] /Count 1 >>");
+    const pageId = add("<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 5 0 R >> >> /Contents 4 0 R >>");
+
+    const stream = makePdfPage(pageLines);
+    const streamBytes = new TextEncoder().encode(stream);
+    objects.push("<< /Length " + streamBytes.length + " >>\nstream\n" + stream + "\nendstream");
+    const contentId = 4;
+    const fontId = add("<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>");
+
+    /* Ensure object numbering remains exactly 1..5. */
+    const parts = ["%PDF-1.4\n%simple-pdf\n"];
+    const offsets = [0];
+    let position = parts[0].length;
+
+    for (let i = 0; i < objects.length; i++) {
+      offsets.push(position);
+      const obj = (i + 1) + " 0 obj\n" + objects[i] + "\nendobj\n";
+      parts.push(obj);
+      position += obj.length;
     }
 
-    fillPdf(d);
+    const xrefPosition = position;
+    let xref = "xref\n0 " + (objects.length + 1) + "\n";
+    xref += "0000000000 65535 f \n";
+    for (let i = 1; i <= objects.length; i++) {
+      xref += String(offsets[i]).padStart(10, "0") + " 00000 n \n";
+    }
+    parts.push(xref);
+    parts.push("trailer\n<< /Size " + (objects.length + 1) + " /Root 1 0 R >>\n");
+    parts.push("startxref\n" + xrefPosition + "\n%%EOF");
 
-    const sheet = $("pdfSheet");
-    const old = {
-      display: sheet.style.display,
-      left: sheet.style.left,
-      zIndex: sheet.style.zIndex
-    };
+    return new Blob(parts, { type: "application/pdf" });
+  }
+
+  function downloadBlob(blob, filename) {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    a.style.display = "none";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 2000);
+  }
+
+  function downloadPDF() {
+    const d = calculate(false);
+    if (!d) return;
+
+    const btn = $("downloadPdfBtn");
+    btn.disabled = true;
+    btn.textContent = "⏳ Preparing PDF...";
 
     try {
-      const btn = $("downloadPdfBtn");
-      btn.disabled = true;
-      btn.textContent = "⏳ Creating PDF...";
+      /*
+        PDF text intentionally uses plain ASCII + "Rs." so it is completely
+        font-independent. The calculator UI still displays the Indian ₹ sign.
+      */
+      const date = new Date().toLocaleDateString("en-IN");
+      const lines = [
+        "Date: " + date,
+        "",
+        "BATCH SUMMARY",
+        "Chicks Placed: " + fmt(d.N, 0),
+        "Mortality / Dead Birds: " + fmt(d.M, 0),
+        "Live Birds: " + fmt(d.liveBirds, 0),
+        "Feed Bags: " + fmt(d.B, 2),
+        "Bag Weight: " + fmt(d.BW) + " Kg",
+        "Total Feed: " + fmt(d.totalFeedKg) + " Kg",
+        "Total Body Weight: " + fmt(d.TW) + " Kg",
+        "Batch Age: " + fmt(d.D, 0) + " Days",
+        "",
+        "TECHNICAL PERFORMANCE",
+        "Livability: " + fmt(d.livabilityPct) + "%",
+        "Mortality: " + fmt(d.mortalityPct) + "%",
+        "Average Body Weight: " + fmt(d.averageBW) + " Kg",
+        "Actual FCR: " + fmt(d.actualFCR),
+        "Target FCR: " + fmt(d.TFCR),
+        "FCR Rating: " + d.fcrRating,
+        "EEF / EPEF Score: " + fmt(d.eef),
+        "EEF Rating: " + d.eefRating,
+        "",
+        "PAYOUT CALCULATION",
+        "Base Growing Charges: Rs. " + fmt(d.GC) + " / Kg",
+        "Base Amount: Rs. " + fmt(d.baseAmount),
+        "Performance Adjustment: " + (d.performanceAmount >= 0 ? "+" : "-") + "Rs. " + fmt(Math.abs(d.performanceAmount)),
+        "Net Realized Rate: Rs. " + fmt(d.netRate) + " / Kg",
+        "",
+        "FINAL NET FARMER PAYOUT: Rs. " + fmt(d.finalPayout),
+        "",
+        "Contract Poultry Farming Performance Calculator || Developed by Akash",
+        "Computer Generated Statement"
+      ];
 
-      sheet.style.display = "block";
-      sheet.style.left = "-10000px";
-      sheet.style.zIndex = "-1";
-
-      /* Wait for browser to render Hindi/₹ correctly before capture. */
-      await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
-
-      const canvas = await html2canvas(sheet, {
-        scale: 2,
-        useCORS: true,
-        backgroundColor: "#ffffff",
-        width: 794,
-        windowWidth: 794,
-        logging: false
-      });
-
-      const { jsPDF } = window.jspdf;
-      const pdf = new jsPDF({
-        orientation: "portrait",
-        unit: "mm",
-        format: "a4",
-        compress: true
-      });
-
-      const pageWidth = 210;
-      const pageHeight = 297;
-      const imgWidth = pageWidth;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
-      let remainingHeight = imgHeight;
-      let position = 0;
-
-      /* Normally the sheet fits on one A4 page. */
-      pdf.addImage(
-        canvas.toDataURL("image/jpeg", 0.94),
-        "JPEG",
-        0,
-        position,
-        imgWidth,
-        imgHeight
-      );
-
-      remainingHeight -= pageHeight;
-
-      /* Safety: if content becomes taller than A4, continue on new pages. */
-      while (remainingHeight > 0) {
-        position = remainingHeight - imgHeight;
-        pdf.addPage();
-        pdf.addImage(
-          canvas.toDataURL("image/jpeg", 0.94),
-          "JPEG",
-          0,
-          position,
-          imgWidth,
-          imgHeight
-        );
-        remainingHeight -= pageHeight;
-      }
-
-      const date = new Date().toISOString().slice(0,10);
-      pdf.save("Poultry_Performance_Payout_" + date + ".pdf");
+      const pdf = createSimplePdf(lines);
+      const filename = "Poultry_Performance_Payout_" + new Date().toISOString().slice(0,10) + ".pdf";
+      downloadBlob(pdf, filename);
 
     } catch (err) {
-      console.error(err);
-      alert("PDF generate nahi ho saka. Page refresh karke dobara try karein.");
+      console.error("PDF error:", err);
+      alert("PDF generate nahi ho saka. Please page refresh karke dobara try karein.");
     } finally {
-      sheet.style.display = old.display;
-      sheet.style.left = old.left;
-      sheet.style.zIndex = old.zIndex;
-
-      const btn = $("downloadPdfBtn");
       btn.disabled = false;
       btn.textContent = "📄 Download PDF";
     }
