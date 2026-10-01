@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contract Poultry Farming Performance & Payout Calculator</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<!-- Direct PDF libraries: NO browser print dialog -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<style>
+  html { scroll-behavior:smooth; }
+  body { font-family:Arial,Helvetica,sans-serif; }
+  .result-hidden { display:none; }
+  .result-visible { display:block; animation:openResult .35s ease; }
+  @keyframes openResult {
+    from { opacity:0; transform:translateY(15px); }
+    to { opacity:1; transform:translateY(0); }
+  }
+  .input-box { transition:.2s ease; }
+  .input-box:focus { transform:translateY(-1px); }
+  .error-field { border-color:#ef4444 !important; box-shadow:0 0 0 3px rgba(239,68,68,.10); }
+
+  /* Hidden A4 sheet used only for direct PDF generation */
+  #pdfSheet {
+    display:none;
+    position:fixed;
+    left:-10000px;
+    top:0;
+    width:794px;
+    min-height:1123px;
+    box-sizing:border-box;
+    padding:42px;
+    background:#fff;
+    color:#111827;
+    z-index:-1;
+  }
+
+  .pdf-title { font-size:26px; font-weight:800; color:#166534; }
+  .pdf-subtitle { font-size:15px; color:#4b5563; margin-top:4px; }
+  .pdf-date { font-size:11px; color:#6b7280; }
+  .pdf-line { height:2px; background:#16a34a; margin:18px 0 22px; }
+  .pdf-section {
+    background:#166534;
+    color:#fff;
+    padding:8px 12px;
+    border-radius:6px;
+    font-size:14px;
+    font-weight:700;
+    margin:15px 0 9px;
+  }
+  .pdf-grid {
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+  }
+  .pdf-item {
+    border:1px solid #d1d5db;
+    border-radius:6px;
+    padding:10px 12px;
+    min-height:54px;
+    box-sizing:border-box;
+  }
+  .pdf-item .label {
+    font-size:10px;
+    color:#6b7280;
+    margin-bottom:4px;
+  }
+  .pdf-item .value {
+    font-size:14px;
+    font-weight:700;
+    color:#111827;
+  }
+  .pdf-payout {
+    border:1px solid #d1d5db;
+    border-radius:6px;
+    overflow:hidden;
+  }
+  .pdf-row {
+    display:flex;
+    justify-content:space-between;
+    gap:20px;
+    padding:10px 12px;
+    border-bottom:1px solid #e5e7eb;
+    font-size:12px;
+  }
+  .pdf-row:last-child { border-bottom:0; }
+  .pdf-final {
+    margin-top:18px;
+    padding:18px;
+    border:2px solid #16a34a;
+    border-radius:8px;
+    background:#f0fdf4;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+  }
+  .pdf-final .small { font-size:11px; color:#166534; font-weight:700; }
+  .pdf-final .big { font-size:27px; color:#166534; font-weight:900; }
+  .pdf-footer {
+    margin-top:24px;
+    padding-top:10px;
+    border-top:1px solid #d1d5db;
+    display:flex;
+    justify-content:space-between;
+    font-size:9px;
+    color:#6b7280;
+  }
+
+  @media print {
+    #pdfSheet { display:none !important; }
+  }
+</style>
+</head>
+
+<body class="bg-slate-100 text-slate-800">
+
+<header class="bg-green-700 text-white shadow-lg">
+  <div class="max-w-7xl mx-auto px-4 py-5">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+      <div>
+        <h1 class="text-2xl md:text-3xl font-bold">Contract Poultry Farming Calculator</h1>
+        <p class="text-green-100 text-sm md:text-base mt-1">
+          Performance & Payout Calculator / प्रदर्शन एवं भुगतान कैलकुलेटर
+        </p>
+      </div>
+      <div id="overallBadge"
+           class="inline-flex items-center w-fit px-3 py-1.5 rounded-full bg-white/15 text-white text-sm font-semibold">
+        ● 🐓 Enter batch data
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="max-w-7xl mx-auto px-4 py-6">
+
+  <div id="errorBox"
+       class="hidden mb-5 rounded-xl border border-red-200 bg-red-50 text-red-700 px-4 py-3 font-semibold">
+  </div>
+
+  <section class="bg-white rounded-2xl shadow-md border border-slate-200 p-5 md:p-7">
+    <div class="mb-6">
+      <h2 class="text-xl md:text-2xl font-bold text-slate-900">Batch Information</h2>
+      <p class="text-sm text-slate-500 mt-1">Enter your flock details / अपने बैच की जानकारी भरें</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+
+      <div>
+        <label for="chicksPlaced" class="block text-sm font-bold text-slate-700 mb-1">
+          Chicks Placed / कुल चूजे
+        </label>
+        <input id="chicksPlaced" type="number" min="1" step="1"
+               placeholder="Enter number of chicks — e.g. 5000"
+               class="input-box w-full rounded-xl border border-slate-300 px-4 py-3 text-base outline-none focus:border-green-600 focus:ring-2 focus:ring-green-100">
+        <p class="text-xs text-slate-500 mt-1">Enter number / संख्या डालें — e.g. 5000</p>
+      </div>
+
+      <div>
+        <label for="mortality" class="block text-sm font-bold text-slate-700 mb-1">
+          Mortality / Dead Birds / मृत पक्षी
+        </label>
+        <input id="mortality" type="number" min="0" step="1"
+               placeholder="Enter dead birds — e.g. 150"
+               class="input-box w-full rounded-xl border border-slate-300 px-4 py-3 text-base outline-none focus:border-green-600 focus:ring-2 focus:ring-green-100">
+        <p class="text-xs text-slate-500 mt-1">Enter dead birds / मृत पक्षी डालें — e.g. 150</p>
+      </div>
+
+      <div>
+        <label for="feedBags" class="block text-sm font-bold text-slate-700 mb-1">
+          Feed Bags / दाने की बोरी
+        </label>
+        <input id="feedBags" type="number" min="0" step="0.01"
+               placeholder="Enter number of bags — e.g. 310"
+               class="input-box w-full rounded-xl border border-slate-300 px-4 py-3 text-base outline-none focus:border-green-600 focus:ring-2 focus:ring-green-100">
+        <p class="text-xs text-slate-500 mt-1">Enter bags consumed / बोरी की संख्या — e.g. 310</p>
+      </div>
+
+      <div>
+        <label for="bagWeight" class="block text-sm font-bold text-slate-700 mb-1">
+          Weight per Feed Bag / प्रति बोरी वजन
+        </label>
+        <div class="relative">
+          <input id="bagWeight" type="number" min="0.01" step="0.01"
+                 placeholder="Enter bag weight — e.g. 50"
+                 class="input-box w-full rounded-xl border border-slate-300 px-4 py-3 pr-14 text-base outline-none focus:border-green-600 focus:ring-2 focus:ring-green-100">
+          <span class="absolute right-4 top-3.5 text-sm text-slate-500">Kg</span>
+        </div>
+        <p class="text-xs text-slate-500 mt-1">Enter bag weight / बोरी का वजन — e.g. 50</p>
+      </div>
+
+      <div>
+        <label for="totalBodyWeight" class="block text-sm font-bold text-slate-700 mb-1">
+          Total Body Weight / कुल बॉडी वजन
+        </label>
+        <div class="relative">
+          <input id="totalBodyWeight" type="number" min="0.01" step="0.01"
+                 placeholder="Enter total body weight — e.g. 10185"
+                 class="input-box w-full rounded-xl border border-slate-300 px-4 py-3 pr-14 text-base outline-none focus:border-green-600 focus:ring-2 focus:ring-green-100">
+          <span class="absolute right-4 top-3.5 text-sm text-slate-500">Kg</span>
+        </div>
+        <p class="text-xs text-slate-500 mt-1">Enter total sold weight / कुल वजन — e.g. 10185</p>
+      </div>
+
+      <div>
+        <label for="ageDays" class="block text-sm font-bold text-slate-700 mb-1">
+          Age of Birds / Batch Days / बैच की उम्र
+        </label>
+        <div class="relative">
+          <input id="ageDays" type="number" min="1" step="1"
+                 placeholder="Enter batch age — e.g. 38"
+                 class="input-box w-full rounded-xl border border-slate-300 px-4 py-3 pr-16 text-base outline-none focus:border-green-600 focus:ring-2 focus:ring-green-100">
+          <span class="absolute right-4 top-3.5 text-sm text-slate-500">Days</span>
+        </div>
+        <p class="text-xs text-slate-500 mt-1">Enter age / उम्र डालें — e.g. 38</p>
+      </div>
+
+      <div>
+        <label for="baseGC" class="block text-sm font-bold text-slate-700 mb-1">
+          Base Growing Charges / बेस GC
+        </label>
+        <div class="relative">
+          <input id="baseGC" type="number" min="0" step="0.01"
+                 placeholder="Enter base GC — e.g. 7.50"
+                 class="input-box w-full rounded-xl border border-slate-300 px-4 py-3 pl-8 text-base outline-none focus:border-green-600 focus:ring-2 focus:ring-green-100">
+          <span class="absolute left-4 top-3.5 text-sm text-slate-500">₹</span>
+        </div>
+        <p class="text-xs text-slate-500 mt-1">₹ per Kg / प्रति किलो — e.g. 7.50</p>
+      </div>
+
+      <div>
+        <label for="targetFCR" class="block text-sm font-bold text-slate-700 mb-1">
+          Standard Target FCR / मानक FCR
+        </label>
+        <input id="targetFCR" type="number" min="0.01" step="0.01"
+               placeholder="Enter target FCR — e.g. 1.60"
+               class="input-box w-full rounded-xl border border-slate-300 px-4 py-3 text-base outline-none focus:border-green-600 focus:ring-2 focus:ring-green-100">
+        <p class="text-xs text-slate-500 mt-1">Benchmark FCR / मानक — e.g. 1.60</p>
+      </div>
+
+      <div>
+        <label for="ratePerPoint" class="block text-sm font-bold text-slate-700 mb-1">
+          Incentive / Penalty Rate / प्रोत्साहन दर
+        </label>
+        <div class="relative">
+          <input id="ratePerPoint" type="number" min="0" step="0.01"
+                 placeholder="Enter rate — e.g. 0.10"
+                 class="input-box w-full rounded-xl border border-slate-300 px-4 py-3 pl-8 text-base outline-none focus:border-green-600 focus:ring-2 focus:ring-green-100">
+          <span class="absolute left-4 top-3.5 text-sm text-slate-500">₹</span>
+        </div>
+        <p class="text-xs text-slate-500 mt-1">₹ per 0.01 FCR / प्रति 0.01 FCR — e.g. 0.10</p>
+      </div>
+
+    </div>
+
+    <div class="flex flex-col sm:flex-row gap-3 mt-7">
+      <button id="calculateBtn" type="button"
+              class="w-full sm:w-auto px-7 py-3.5 rounded-xl bg-green-600 hover:bg-green-700 active:bg-green-800 text-white font-bold shadow-md transition">
+        Calculate Payout
+      </button>
+
+      <button id="resetBtn" type="button"
+              class="w-full sm:w-auto px-7 py-3.5 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold transition">
+        Reset
+      </button>
+    </div>
+
+    <p class="text-xs text-slate-500 mt-3">
+      Average Body Weight is calculated automatically from Total Body Weight.
+    </p>
+  </section>
+
+  <section id="resultSection" class="result-hidden mt-7">
+
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5">
+      <div>
+        <h2 class="text-2xl font-bold text-slate-900">Performance Result</h2>
+        <p class="text-sm text-slate-500">Batch performance & payout summary / बैच प्रदर्शन एवं भुगतान सारांश</p>
+      </div>
+
+      <button id="downloadPdfBtn" type="button"
+              class="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold shadow-lg transition">
+        📄 Download PDF
+      </button>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+
+      <div class="bg-white rounded-2xl shadow-md border border-slate-200 p-5">
+        <p class="text-sm text-slate-500">Livability</p>
+        <h3 id="livabilityValue" class="text-3xl font-extrabold text-green-600 mt-1">0.00%</h3>
+        <div class="mt-4 pt-4 border-t border-slate-100">
+          <p class="text-sm text-slate-500">Mortality</p>
+          <p id="mortalityValue" class="text-lg font-bold">0.00%</p>
+          <span id="mortalityBadge" class="inline-block mt-3 px-2.5 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-500">Waiting</span>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl shadow-md border border-slate-200 p-5">
+        <p class="text-sm text-slate-500">Total Weight Lifted</p>
+        <h3 id="weightValue" class="text-3xl font-extrabold text-blue-600 mt-1">0.00</h3>
+        <p class="text-sm text-slate-500">Kg</p>
+        <div class="mt-4 pt-4 border-t border-slate-100">
+          <p class="text-sm text-slate-500">Total Feed</p>
+          <p id="feedValue" class="text-lg font-bold">0.00 Kg</p>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl shadow-md border border-slate-200 p-5">
+        <p class="text-sm text-slate-500">Actual FCR</p>
+        <h3 id="fcrValue" class="text-3xl font-extrabold text-purple-600 mt-1">0.00</h3>
+        <span id="fcrBadge" class="inline-block mt-4 px-2.5 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-500">Waiting</span>
+        <div class="mt-4 pt-4 border-t border-slate-100">
+          <p class="text-sm text-slate-500">Target FCR</p>
+          <p id="targetFCRDisplay" class="text-lg font-bold">0.00</p>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl shadow-md border border-slate-200 p-5">
+        <p class="text-sm text-slate-500">EEF / EPEF Score</p>
+        <h3 id="eefValue" class="text-3xl font-extrabold text-orange-600 mt-1">0.00</h3>
+        <span id="eefBadge" class="inline-block mt-4 px-2.5 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-500">Waiting</span>
+      </div>
+
+    </div>
+
+    <div class="mt-5 bg-white rounded-2xl shadow-md border border-green-200 p-5">
+      <p class="text-sm text-slate-500">Average Body Weight / औसत बॉडी वजन</p>
+      <h3 id="averageBodyWeightValue" class="text-3xl font-extrabold text-green-700 mt-1">0.00 Kg</h3>
+      <p class="text-xs text-slate-500 mt-1">Total Body Weight</p>
+    </div>
+
+    <div class="mt-5 bg-white rounded-2xl shadow-md border border-slate-200 overflow-hidden">
+      <div class="bg-green-700 text-white px-5 py-4">
+        <h3 class="text-xl font-bold">Payout Breakdown</h3>
+        <p class="text-sm text-green-100">भुगतान का विवरण</p>
+      </div>
+
+      <div class="p-5 grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div class="space-y-4">
+
+          <div class="flex justify-between gap-4 border-b pb-3">
+            <div>
+              <p class="font-semibold">Base Amount</p>
+              <p class="text-xs text-slate-500">Total Weight × Base GC</p>
+            </div>
+            <p id="baseAmount" class="font-bold">₹0.00</p>
+          </div>
+
+          <div class="flex justify-between gap-4 border-b pb-3">
+            <div>
+              <p class="font-semibold">Performance Adjustment</p>
+              <p id="performanceText" class="text-xs text-slate-500">No FCR adjustment</p>
+            </div>
+            <p id="performanceAmount" class="text-xl font-bold">₹0.00</p>
+          </div>
+
+          <div class="flex justify-between gap-4 border-b pb-3">
+            <div>
+              <p class="font-semibold">Net Realized Rate</p>
+              <p class="text-xs text-slate-500">Final rate per Kg</p>
+            </div>
+            <p id="netRate" class="font-bold text-green-700">₹0.00 / Kg</p>
+          </div>
+
+        </div>
+
+        <div class="rounded-2xl bg-green-50 border border-green-200 p-6 flex flex-col justify-center">
+          <p class="text-sm font-semibold text-green-700">Final Net Farmer Payout</p>
+          <p id="finalPayout" class="text-4xl md:text-5xl font-extrabold text-green-700 mt-2">₹0.00</p>
+          <p class="text-xs text-green-700 mt-2">Total amount payable to farmer</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-5 bg-white rounded-2xl shadow-md border border-slate-200 p-5">
+      <h3 class="text-lg font-bold mb-4">Calculation Details</h3>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+
+        <div class="bg-slate-50 rounded-xl p-4">
+          <p class="text-xs text-slate-500">Live Birds</p>
+          <p id="liveBirds" class="text-lg font-bold">0</p>
+        </div>
+
+        <div class="bg-slate-50 rounded-xl p-4">
+          <p class="text-xs text-slate-500">Total Feed</p>
+          <p id="detailFeed" class="text-lg font-bold">0.00 Kg</p>
+        </div>
+
+        <div class="bg-slate-50 rounded-xl p-4">
+          <p class="text-xs text-slate-500">FCR Difference</p>
+          <p id="fcrDifference" class="text-lg font-bold">0.00</p>
+        </div>
+
+        <div class="bg-slate-50 rounded-xl p-4">
+          <p class="text-xs text-slate-500">Bag Weight</p>
+          <p id="detailBagWeight" class="text-lg font-bold">0.00 Kg</p>
+        </div>
+
+        <div class="bg-slate-50 rounded-xl p-4">
+          <p class="text-xs text-slate-500">Total Body Weight</p>
+          <p id="detailBodyWeight" class="text-lg font-bold">0.00 Kg</p>
+        </div>
+
+        <div class="bg-slate-50 rounded-xl p-4">
+          <p class="text-xs text-slate-500">Average Body Weight</p>
+          <p id="detailAverageBodyWeight" class="text-lg font-bold">0.00 Kg</p>
+        </div>
+
+        <div class="bg-slate-50 rounded-xl p-4">
+          <p class="text-xs text-slate-500">Batch Age</p>
+          <p id="detailAge" class="text-lg font-bold">0 Days</p>
+        </div>
+
+      </div>
+    </div>
+
+  </section>
+</main>
+
+<!-- =========================================================
+     HIDDEN A4 PDF TEMPLATE
+     html2canvas converts this browser-rendered sheet into PDF.
+     This preserves Hindi + ₹ + exact visual layout.
+========================================================= -->
+<div id="pdfSheet">
+
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+    <div>
+      <div class="pdf-title">Contract Poultry Farming</div>
+      <div class="pdf-subtitle">Performance & Payout Statement / प्रदर्शन एवं भुगतान विवरण</div>
+    </div>
+    <div id="pdfDate" class="pdf-date"></div>
+  </div>
+
+  <div class="pdf-line"></div>
+
+  <div class="pdf-section">Batch Summary / बैच विवरण</div>
+  <div class="pdf-grid">
+    <div class="pdf-item"><div class="label">Chicks Placed / कुल चूजे</div><div id="pChicks" class="value">-</div></div>
+    <div class="pdf-item"><div class="label">Mortality / मृत पक्षी</div><div id="pMortality" class="value">-</div></div>
+    <div class="pdf-item"><div class="label">Live Birds / जीवित पक्षी</div><div id="pLiveBirds" class="value">-</div></div>
+    <div class="pdf-item"><div class="label">Batch Age / बैच आयु</div><div id="pAge" class="value">-</div></div>
+    <div class="pdf-item"><div class="label">Feed Bags / दाने की बोरी</div><div id="pFeedBags" class="value">-</div></div>
+    <div class="pdf-item"><div class="label">Bag Weight / बोरी वजन</div><div id="pBagWeight" class="value">-</div></div>
+    <div class="pdf-item"><div class="label">Total Feed / कुल दाना</div><div id="pTotalFeed" class="value">-</div></div>
+    <div class="pdf-item"><div class="label">Total Body Weight / कुल वजन</div><div id="pTotalWeight" class="value">-</div></div>
+  </div>
+
+  <div class="pdf-section">Technical Performance / तकनीकी प्रदर्शन</div>
+  <div class="pdf-grid">
+    <div class="pdf-item"><div class="label">Livability / जीवित प्रतिशत</div><div id="pLivability" class="value">-</div></div>
+    <div class="pdf-item"><div class="label">Mortality % / मृत्यु प्रतिशत</div><div id="pMortalityPercent" class="value">-</div></div>
+    <div class="pdf-item"><div class="label">Average Body Weight / औसत वजन</div><div id="pAverageWeight" class="value">-</div></div>
+    <div class="pdf-item"><div class="label">Actual FCR</div><div id="pFCR" class="value">-</div></div>
+    <div class="pdf-item"><div class="label">Target FCR / मानक FCR</div><div id="pTargetFCR" class="value">-</div></div>
+    <div class="pdf-item"><div class="label">EEF / EPEF Score</div><div id="pEEF" class="value">-</div></div>
+    <div class="pdf-item"><div class="label">FCR Rating</div><div id="pFCRRating" class="value">-</div></div>
+    <div class="pdf-item"><div class="label">EEF Rating</div><div id="pEEFRating" class="value">-</div></div>
+  </div>
+
+  <div class="pdf-section">Payout Calculation / भुगतान गणना</div>
+  <div class="pdf-payout">
+    <div class="pdf-row"><span>Base Growing Charges / बेस GC</span><strong id="pBaseGC">-</strong></div>
+    <div class="pdf-row"><span>Base Amount</span><strong id="pBaseAmount">-</strong></div>
+    <div class="pdf-row"><span>Performance Incentive / Deduction</span><strong id="pPerformance">-</strong></div>
+    <div class="pdf-row"><span>Net Realized Rate / Kg</span><strong id="pNetRate">-</strong></div>
+  </div>
+
+  <div class="pdf-final">
+    <div>
+      <div class="small">FINAL NET FARMER PAYOUT</div>
+      <div style="font-size:11px;color:#4b5563;margin-top:4px;">अंतिम किसान भुगतान</div>
+    </div>
+    <div id="pFinalPayout" class="big">₹0.00</div>
+  </div>
+
+  <div class="pdf-footer">
+    <span>Contract Poultry Farming Performance Calculator</span>
+    <span>Computer Generated Statement</span>
+  </div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  const $ = (id) => document.getElementById(id);
+
+  const inputs = {
+    chicks: $("chicksPlaced"),
+    mortality: $("mortality"),
+    feedBags: $("feedBags"),
+    bagWeight: $("bagWeight"),
+    totalWeight: $("totalBodyWeight"),
+    age: $("ageDays"),
+    baseGC: $("baseGC"),
+    targetFCR: $("targetFCR"),
+    rate: $("ratePerPoint")
+  };
+
+  const resultSection = $("resultSection");
+  const errorBox = $("errorBox");
+
+  function num(el) {
+    const n = parseFloat(el.value);
+    return Number.isFinite(n) ? n : NaN;
+  }
+
+  function fmt(value, decimals = 2) {
+    return Number(value || 0).toLocaleString("en-IN", {
+      minimumFractionDigits: decimals,
+      maximumFractionDigits: decimals
+    });
+  }
+
+  function money(value) {
+    return "₹" + Number(value || 0).toLocaleString("en-IN", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+  }
+
+  function error(message, field) {
+    errorBox.textContent = "⚠ " + message;
+    errorBox.classList.remove("hidden");
+
+    Object.values(inputs).forEach(i => i.classList.remove("error-field"));
+
+    if (field) {
+      field.classList.add("error-field");
+      field.focus();
+    }
+
+    return false;
+  }
+
+  function clearError() {
+    errorBox.textContent = "";
+    errorBox.classList.add("hidden");
+    Object.values(inputs).forEach(i => i.classList.remove("error-field"));
+  }
+
+  function validate() {
+    clearError();
+
+    const N = num(inputs.chicks);
+    const M = num(inputs.mortality);
+    const B = num(inputs.feedBags);
+    const BW = num(inputs.bagWeight);
+    const TW = num(inputs.totalWeight);
+    const D = num(inputs.age);
+    const GC = num(inputs.baseGC);
+    const TFCR = num(inputs.targetFCR);
+    const RATE = num(inputs.rate);
+
+    if (!Number.isFinite(N) || N <= 0) return error("Please enter Chicks Placed / कुल चूजे.", inputs.chicks);
+    if (!Number.isFinite(M) || M < 0) return error("Please enter valid Mortality / मृत पक्षी.", inputs.mortality);
+    if (M >= N) return error("Mortality must be less than Chicks Placed.", inputs.mortality);
+    if (!Number.isFinite(B) || B <= 0) return error("Please enter Feed Bags.", inputs.feedBags);
+    if (!Number.isFinite(BW) || BW <= 0) return error("Please enter Weight per Feed Bag.", inputs.bagWeight);
+    if (!Number.isFinite(TW) || TW <= 0) return error("Please enter Total Body Weight.", inputs.totalWeight);
+    if (!Number.isFinite(D) || D <= 0) return error("Please enter Age / Batch Days.", inputs.age);
+    if (!Number.isFinite(GC) || GC < 0) return error("Please enter valid Base Growing Charges.", inputs.baseGC);
+    if (!Number.isFinite(TFCR) || TFCR <= 0) return error("Please enter Standard Target FCR.", inputs.targetFCR);
+    if (!Number.isFinite(RATE) || RATE < 0) return error("Please enter valid Incentive / Penalty Rate.", inputs.rate);
+
+    return true;
+  }
+
+  function calculate(showResult = true) {
+    if (!validate()) return null;
+
+    const N = num(inputs.chicks);
+    const M = num(inputs.mortality);
+    const B = num(inputs.feedBags);
+    const BW = num(inputs.bagWeight);
+    const TW = num(inputs.totalWeight);
+    const D = num(inputs.age);
+    const GC = num(inputs.baseGC);
+    const TFCR = num(inputs.targetFCR);
+    const RATE = num(inputs.rate);
+
+    const liveBirds = N - M;
+    const mortalityPct = (M / N) * 100;
+    const livabilityPct = (liveBirds / N) * 100;
+    const totalFeedKg = B * BW;
+
+    /* User enters total body weight; average weight is derived. */
+    const averageBW = TW / liveBirds;
+
+    const actualFCR = totalFeedKg / TW;
+
+    const eef = (
+      livabilityPct * averageBW
+    ) / (
+      D * actualFCR
+    ) * 100;
+
+    const fcrDifference = TFCR - actualFCR;
+
+    let incentive = 0;
+    let penalty = 0;
+
+    if (actualFCR < TFCR) {
+      incentive = (TFCR - actualFCR) * 100 * RATE;
+    } else if (actualFCR > TFCR) {
+      penalty = (actualFCR - TFCR) * 100 * RATE;
+    }
+
+    const adjustmentRate = incentive - penalty;
+    const netRate = Math.max(0, GC + adjustmentRate);
+    const baseAmount = TW * GC;
+    const performanceAmount = TW * adjustmentRate;
+    const finalPayout = TW * netRate;
+
+    let fcrRating = "Poor";
+    if (actualFCR < 1.55) fcrRating = "Excellent";
+    else if (actualFCR <= 1.65) fcrRating = "Average";
+
+    let eefRating = "Needs Improvement";
+    if (eef > 350) eefRating = "Excellent";
+    else if (eef >= 300) eefRating = "Good";
+
+    updateUI({
+      N, M, B, BW, TW, D, GC, TFCR, RATE,
+      liveBirds, mortalityPct, livabilityPct,
+      totalFeedKg, averageBW, actualFCR,
+      eef, fcrDifference, incentive, penalty,
+      baseAmount, performanceAmount, netRate,
+      finalPayout, fcrRating, eefRating
+    });
+
+    if (showResult) {
+      resultSection.classList.remove("result-hidden");
+      resultSection.classList.add("result-visible");
+
+      setTimeout(() => {
+        resultSection.scrollIntoView({ behavior:"smooth", block:"start" });
+      }, 80);
+    }
+
+    return {
+      N, M, B, BW, TW, D, GC, TFCR, RATE,
+      liveBirds, mortalityPct, livabilityPct,
+      totalFeedKg, averageBW, actualFCR,
+      eef, fcrDifference, incentive, penalty,
+      baseAmount, performanceAmount, netRate,
+      finalPayout, fcrRating, eefRating
+    };
+  }
+
+  function updateUI(d) {
+    $("livabilityValue").textContent = fmt(d.livabilityPct) + "%";
+    $("mortalityValue").textContent = fmt(d.mortalityPct) + "%";
+    $("weightValue").textContent = fmt(d.TW);
+    $("feedValue").textContent = fmt(d.totalFeedKg) + " Kg";
+    $("averageBodyWeightValue").textContent = fmt(d.averageBW) + " Kg";
+    $("fcrValue").textContent = fmt(d.actualFCR);
+    $("targetFCRDisplay").textContent = fmt(d.TFCR);
+    $("eefValue").textContent = fmt(d.eef);
+
+    $("liveBirds").textContent = fmt(d.liveBirds, 0);
+    $("detailFeed").textContent = fmt(d.totalFeedKg) + " Kg";
+    $("fcrDifference").textContent = (d.fcrDifference >= 0 ? "+" : "") + fmt(d.fcrDifference);
+    $("detailBagWeight").textContent = fmt(d.BW) + " Kg";
+    $("detailBodyWeight").textContent = fmt(d.TW) + " Kg";
+    $("detailAverageBodyWeight").textContent = fmt(d.averageBW) + " Kg";
+    $("detailAge").textContent = fmt(d.D, 0) + " Days";
+
+    $("baseAmount").textContent = money(d.baseAmount);
+    $("netRate").textContent = money(d.netRate) + " / Kg";
+    $("finalPayout").textContent = money(d.finalPayout);
+
+    const perf = $("performanceAmount");
+    if (d.performanceAmount > 0) {
+      perf.textContent = "+" + money(d.performanceAmount);
+      perf.className = "text-xl font-bold text-green-600";
+      $("performanceText").textContent = "FCR incentive applied";
+    } else if (d.performanceAmount < 0) {
+      perf.textContent = "-" + money(Math.abs(d.performanceAmount));
+      perf.className = "text-xl font-bold text-red-600";
+      $("performanceText").textContent = "FCR penalty applied";
+    } else {
+      perf.textContent = "₹0.00";
+      perf.className = "text-xl font-bold text-slate-900";
+      $("performanceText").textContent = "No FCR adjustment";
+    }
+
+    const mb = $("mortalityBadge");
+    if (d.mortalityPct <= 3.5) {
+      mb.textContent = "✓ Good Mortality";
+      mb.className = "inline-block mt-3 px-2.5 py-1 rounded-full text-xs font-bold bg-green-100 text-green-700";
+    } else if (d.mortalityPct <= 5) {
+      mb.textContent = "⚠ Moderate Mortality";
+      mb.className = "inline-block mt-3 px-2.5 py-1 rounded-full text-xs font-bold bg-yellow-100 text-yellow-700";
+    } else {
+      mb.textContent = "✕ High Mortality";
+      mb.className = "inline-block mt-3 px-2.5 py-1 rounded-full text-xs font-bold bg-red-100 text-red-700";
+    }
+
+    const fb = $("fcrBadge");
+    if (d.actualFCR < 1.55) {
+      fb.textContent = "Excellent";
+      fb.className = "inline-block mt-3 px-2.5 py-1 rounded-full text-xs font-bold bg-green-100 text-green-700";
+    } else if (d.actualFCR <= 1.65) {
+      fb.textContent = "Average";
+      fb.className = "inline-block mt-3 px-2.5 py-1 rounded-full text-xs font-bold bg-yellow-100 text-yellow-700";
+    } else {
+      fb.textContent = "Poor";
+      fb.className = "inline-block mt-3 px-2.5 py-1 rounded-full text-xs font-bold bg-red-100 text-red-700";
+    }
+
+    const eb = $("eefBadge");
+    if (d.eef > 350) {
+      eb.textContent = "Excellent";
+      eb.className = "inline-block mt-3 px-2.5 py-1 rounded-full text-xs font-bold bg-green-100 text-green-700";
+    } else if (d.eef >= 300) {
+      eb.textContent = "Good";
+      eb.className = "inline-block mt-3 px-2.5 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-700";
+    } else {
+      eb.textContent = "Needs Improvement";
+      eb.className = "inline-block mt-3 px-2.5 py-1 rounded-full text-xs font-bold bg-yellow-100 text-yellow-700";
+    }
+
+    const overall = $("overallBadge");
+    if (d.mortalityPct <= 3.5 && d.actualFCR < 1.55 && d.eef > 350) {
+      overall.textContent = "● Excellent Performance";
+      overall.className = "inline-flex items-center w-fit px-3 py-1.5 rounded-full bg-green-100 text-green-700 text-sm font-bold";
+    } else if (d.mortalityPct <= 5 && d.actualFCR <= 1.65) {
+      overall.textContent = "● Good Performance";
+      overall.className = "inline-flex items-center w-fit px-3 py-1.5 rounded-full bg-blue-100 text-blue-700 text-sm font-bold";
+    } else {
+      overall.textContent = "● Performance Needs Attention";
+      overall.className = "inline-flex items-center w-fit px-3 py-1.5 rounded-full bg-red-100 text-red-700 text-sm font-bold";
+    }
+  }
+
+  function fillPdf(d) {
+    $("pdfDate").textContent = "Date: " + new Date().toLocaleDateString("en-IN");
+
+    $("pChicks").textContent = fmt(d.N, 0);
+    $("pMortality").textContent = fmt(d.M, 0);
+    $("pLiveBirds").textContent = fmt(d.liveBirds, 0);
+    $("pAge").textContent = fmt(d.D, 0) + " Days";
+    $("pFeedBags").textContent = fmt(d.B, 0);
+    $("pBagWeight").textContent = fmt(d.BW) + " Kg";
+    $("pTotalFeed").textContent = fmt(d.totalFeedKg) + " Kg";
+    $("pTotalWeight").textContent = fmt(d.TW) + " Kg";
+
+    $("pLivability").textContent = fmt(d.livabilityPct) + "%";
+    $("pMortalityPercent").textContent = fmt(d.mortalityPct) + "%";
+    $("pAverageWeight").textContent = fmt(d.averageBW) + " Kg";
+    $("pFCR").textContent = fmt(d.actualFCR);
+    $("pTargetFCR").textContent = fmt(d.TFCR);
+    $("pEEF").textContent = fmt(d.eef);
+    $("pFCRRating").textContent = d.fcrRating;
+    $("pEEFRating").textContent = d.eefRating;
+
+    $("pBaseGC").textContent = money(d.GC) + " / Kg";
+    $("pBaseAmount").textContent = money(d.baseAmount);
+
+    if (d.performanceAmount > 0) {
+      $("pPerformance").textContent = "+" + money(d.performanceAmount);
+      $("pPerformance").style.color = "#15803d";
+    } else if (d.performanceAmount < 0) {
+      $("pPerformance").textContent = "-" + money(Math.abs(d.performanceAmount));
+      $("pPerformance").style.color = "#dc2626";
+    } else {
+      $("pPerformance").textContent = "₹0.00";
+      $("pPerformance").style.color = "#111827";
+    }
+
+    $("pNetRate").textContent = money(d.netRate) + " / Kg";
+    $("pFinalPayout").textContent = money(d.finalPayout);
+  }
+
+  async function downloadPDF() {
+    let d = calculate(false);
+    if (!d) return;
+
+    if (!window.jspdf || !window.html2canvas) {
+      alert("PDF library load nahi hui. Internet connection check karke page refresh karein.");
+      return;
+    }
+
+    fillPdf(d);
+
+    const sheet = $("pdfSheet");
+    const old = {
+      display: sheet.style.display,
+      left: sheet.style.left,
+      zIndex: sheet.style.zIndex
+    };
+
+    try {
+      const btn = $("downloadPdfBtn");
+      btn.disabled = true;
+      btn.textContent = "⏳ Creating PDF...";
+
+      sheet.style.display = "block";
+      sheet.style.left = "-10000px";
+      sheet.style.zIndex = "-1";
+
+      /* Wait for browser to render Hindi/₹ correctly before capture. */
+      await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+
+      const canvas = await html2canvas(sheet, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: "#ffffff",
+        width: 794,
+        windowWidth: 794,
+        logging: false
+      });
+
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({
+        orientation: "portrait",
+        unit: "mm",
+        format: "a4",
+        compress: true
+      });
+
+      const pageWidth = 210;
+      const pageHeight = 297;
+      const imgWidth = pageWidth;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+      let remainingHeight = imgHeight;
+      let position = 0;
+
+      /* Normally the sheet fits on one A4 page. */
+      pdf.addImage(
+        canvas.toDataURL("image/jpeg", 0.94),
+        "JPEG",
+        0,
+        position,
+        imgWidth,
+        imgHeight
+      );
+
+      remainingHeight -= pageHeight;
+
+      /* Safety: if content becomes taller than A4, continue on new pages. */
+      while (remainingHeight > 0) {
+        position = remainingHeight - imgHeight;
+        pdf.addPage();
+        pdf.addImage(
+          canvas.toDataURL("image/jpeg", 0.94),
+          "JPEG",
+          0,
+          position,
+          imgWidth,
+          imgHeight
+        );
+        remainingHeight -= pageHeight;
+      }
+
+      const date = new Date().toISOString().slice(0,10);
+      pdf.save("Poultry_Performance_Payout_" + date + ".pdf");
+
+    } catch (err) {
+      console.error(err);
+      alert("PDF generate nahi ho saka. Page refresh karke dobara try karein.");
+    } finally {
+      sheet.style.display = old.display;
+      sheet.style.left = old.left;
+      sheet.style.zIndex = old.zIndex;
+
+      const btn = $("downloadPdfBtn");
+      btn.disabled = false;
+      btn.textContent = "📄 Download PDF";
+    }
+  }
+
+  $("calculateBtn").addEventListener("click", () => calculate(true));
+
+  $("downloadPdfBtn").addEventListener("click", downloadPDF);
+
+  $("resetBtn").addEventListener("click", () => {
+    Object.values(inputs).forEach(input => input.value = "");
+    clearError();
+
+    resultSection.classList.remove("result-visible");
+    resultSection.classList.add("result-hidden");
+
+    $("overallBadge").textContent = "● Enter batch data";
+    $("overallBadge").className =
+      "inline-flex items-center w-fit px-3 py-1.5 rounded-full bg-white/15 text-white text-sm font-semibold";
+
+    window.scrollTo({ top:0, behavior:"smooth" });
+
+    setTimeout(() => inputs.chicks.focus(), 300);
+  });
+
+  let resultHasOpened = false;
+
+  Object.values(inputs).forEach(input => {
+    input.addEventListener("input", () => {
+      if (resultHasOpened) {
+        const complete = Object.values(inputs).every(i => i.value.trim() !== "");
+        if (complete) calculate(false);
+      }
+    });
+
+    input.addEventListener("keydown", event => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        const d = calculate(true);
+        if (d) resultHasOpened = true;
+      }
+    });
+  });
+
+  $("calculateBtn").addEventListener("click", () => {
+    const d = calculate(true);
+    if (d) resultHasOpened = true;
+  });
+
+})();
+</script>
+
+</body>
+</html>

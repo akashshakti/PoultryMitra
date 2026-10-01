@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0b1220" />
+  <meta name="description" content="PoultryMitra - Smart digital tools for contract poultry farming, performance & payout calculation, poultry weighing and delivery challan management." />
+  <title>PoultryMitra | Smart Poultry Farming Tools</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif']
+          },
+          colors: {
+            brand: {
+              50: '#effdf5',
+              100: '#d9fbe8',
+              500: '#16a34a',
+              600: '#15803d',
+              700: '#166534'
+            }
+          },
+          boxShadow: {
+            glow: '0 0 40px rgba(34,197,94,.14)'
+          }
+        }
+      }
+    }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    html { scroll-behavior: smooth; }
+    body { font-family: Inter, system-ui, sans-serif; }
+    .glass {
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+    }
+    .gradient-text {
+      background: linear-gradient(90deg, #16a34a, #22c55e, #84cc16);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .grid-bg {
+      background-image:
+        linear-gradient(rgba(100,116,139,.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(100,116,139,.08) 1px, transparent 1px);
+      background-size: 32px 32px;
+    }
+    .tool-card { transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease; }
+    .tool-card:hover { transform: translateY(-7px); }
+    .faq-answer { display: none; }
+    .faq-item.open .faq-answer { display: block; }
+    .faq-item.open .faq-icon { transform: rotate(45deg); }
+    .faq-icon { transition: transform .2s ease; }
+  </style>
+</head>
+
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-300">
+
+  <!-- NAVBAR -->
+  <header class="fixed top-0 left-0 right-0 z-50 border-b border-slate-200/70 dark:border-slate-800/80 bg-white/80 dark:bg-slate-950/80 glass">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="h-16 flex items-center justify-between">
+
+        <a href="#home" class="flex items-center gap-3 shrink-0">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-green-500 to-lime-400 text-white flex items-center justify-center shadow-lg shadow-green-500/20">
+            <svg width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M6 15c-2 0-3-1.2-3-3 0-1.7 1.2-3 3-3 .2-2.4 2-4 4.5-4 1.8 0 3.2.8 4.1 2.1A4.5 4.5 0 0 1 21 11.5c0 2-1.5 3.5-3.5 3.5H6Z"/>
+              <path d="M8 15v4m4-4v4m4-4v4M8.5 9.5 10 8m5.5 2.5 1.5-1.5"/>
+            </svg>
+          </div>
+          <div>
+            <div class="font-extrabold tracking-tight leading-none">Poultry<span class="text-green-500">Mitra</span></div>
+            <div class="text-[10px] text-slate-500 dark:text-slate-400 mt-1">Smart Poultry Tools</div>
+          </div>
+        </a>
+
+        <nav class="hidden lg:flex items-center gap-7 text-sm font-medium">
+          <a class="nav-link hover:text-green-500 transition" href="#home">Home</a>
+          <a class="nav-link hover:text-green-500 transition" href="#tools">Tools</a>
+          <a class="nav-link hover:text-green-500 transition" href="#services">Services</a>
+          <a class="nav-link hover:text-green-500 transition" href="#about">About</a>
+          <a class="nav-link hover:text-green-500 transition" href="#faq">FAQ</a>
+          <a class="nav-link hover:text-green-500 transition" href="#contact">Contact</a>
+        </nav>
+
+        <div class="flex items-center gap-2">
+          <button id="themeBtn" aria-label="Toggle dark and light theme"
+            class="w-10 h-10 rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-900 flex items-center justify-center transition">
+            <span id="themeIcon">🌙</span>
+          </button>
+
+          <a href="PoultryMitra.apk"
+             class="hidden sm:flex items-center gap-2 px-4 py-2.5 rounded-xl bg-green-600 hover:bg-green-700 text-white font-bold text-sm transition shadow-lg shadow-green-600/20">
+            <span>↓</span> Download APK
+          </a>
+
+          <button id="menuBtn" class="lg:hidden w-10 h-10 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center justify-center">
+            <span class="text-xl">☰</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- MOBILE MENU -->
+      <div id="mobileMenu" class="hidden lg:hidden pb-4">
+        <div class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-3 space-y-1 shadow-xl">
+          <a class="mobile-link block px-4 py-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800" href="#home">Home</a>
+          <a class="mobile-link block px-4 py-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800" href="#tools">Tools</a>
+          <a class="mobile-link block px-4 py-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800" href="#services">Services</a>
+          <a class="mobile-link block px-4 py-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800" href="#about">About</a>
+          <a class="mobile-link block px-4 py-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800" href="#faq">FAQ</a>
+          <a class="mobile-link block px-4 py-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800" href="#contact">Contact</a>
+          <a href="PoultryMitra.apk" class="sm:hidden block text-center px-4 py-3 rounded-xl bg-green-600 text-white font-bold mt-2">Download APK</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- HERO -->
+    <section id="home" class="relative overflow-hidden pt-32 pb-20 sm:pt-36 sm:pb-28 grid-bg">
+      <div class="absolute -top-32 -right-32 w-96 h-96 bg-green-500/15 rounded-full blur-3xl"></div>
+      <div class="absolute top-80 -left-40 w-96 h-96 bg-lime-400/10 rounded-full blur-3xl"></div>
+
+      <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-4xl mx-auto text-center">
+
+          <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-green-200 dark:border-green-900 bg-green-50 dark:bg-green-950/40 text-green-700 dark:text-green-300 text-xs sm:text-sm font-semibold mb-6">
+            <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+            Digital Tools for Contract Poultry Farming
+          </div>
+
+          <h1 class="text-4xl sm:text-5xl lg:text-7xl font-extrabold tracking-tight leading-[1.05]">
+            Smarter Poultry Farming.
+            <span class="gradient-text">Simpler Calculations.</span>
+          </h1>
+
+          <p class="mt-6 max-w-2xl mx-auto text-base sm:text-lg text-slate-600 dark:text-slate-300 leading-8">
+            PoultryMitra brings practical digital tools together for contract poultry farming —
+            from weighing and delivery challans to performance analysis and payout calculations.
+          </p>
+
+          <div class="mt-9 flex flex-col sm:flex-row justify-center gap-3">
+            <a href="#tools" class="px-6 py-3.5 rounded-xl bg-green-600 hover:bg-green-700 text-white font-bold transition shadow-xl shadow-green-600/20">
+              Explore Tools →
+            </a>
+            <a href="PoultryMitra.apk" class="px-6 py-3.5 rounded-xl border border-slate-300 dark:border-slate-700 hover:border-green-500 hover:text-green-500 font-bold transition">
+              Download Android App
+            </a>
+          </div>
+
+          <div class="mt-12 grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-3xl mx-auto">
+            <div class="p-4 rounded-2xl bg-white/80 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800">
+              <div class="text-2xl font-extrabold">3+</div>
+              <div class="text-xs text-slate-500 dark:text-slate-400 mt-1">Digital Tools</div>
+            </div>
+            <div class="p-4 rounded-2xl bg-white/80 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800">
+              <div class="text-2xl font-extrabold">100%</div>
+              <div class="text-xs text-slate-500 dark:text-slate-400 mt-1">Responsive</div>
+            </div>
+            <div class="p-4 rounded-2xl bg-white/80 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800">
+              <div class="text-2xl font-extrabold">Fast</div>
+              <div class="text-xs text-slate-500 dark:text-slate-400 mt-1">Calculations</div>
+            </div>
+            <div class="p-4 rounded-2xl bg-white/80 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800">
+              <div class="text-2xl font-extrabold">Android</div>
+              <div class="text-xs text-slate-500 dark:text-slate-400 mt-1">APK Available</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TOOLS -->
+    <section id="tools" class="py-20 sm:py-24 bg-white dark:bg-slate-900/40">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        <div class="max-w-2xl mb-12">
+          <span class="text-green-600 dark:text-green-400 font-bold text-sm uppercase tracking-widest">Our Digital Tools</span>
+          <h2 class="mt-3 text-3xl sm:text-4xl font-extrabold">Everything you need in one place.</h2>
+          <p class="mt-4 text-slate-600 dark:text-slate-400 leading-7">
+            Select a tool below to start working. All tools are designed for quick data entry,
+            automatic calculations and practical day-to-day poultry operations.
+          </p>
+        </div>
+
+        <div class="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
+
+          <!-- PP -->
+          <article class="tool-card group rounded-3xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 p-6 shadow-sm hover:shadow-glow">
+            <div class="flex items-start justify-between">
+              <div class="w-14 h-14 rounded-2xl bg-blue-100 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center text-2xl">₹</div>
+              <span class="px-3 py-1 rounded-full text-xs font-bold bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300">Calculator</span>
+            </div>
+            <h3 class="mt-6 text-xl font-extrabold">Payout Calculator</h3>
+            <p class="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-400">
+              Calculate contract poultry payout using production and performance inputs quickly and clearly.
+            </p>
+            <ul class="mt-5 space-y-2 text-sm text-slate-600 dark:text-slate-300">
+              <li>✓ Automatic calculations</li>
+              <li>✓ Clean input interface</li>
+              <li>✓ Mobile friendly</li>
+            </ul>
+            <a href="pp.html" class="mt-7 inline-flex w-full justify-center py-3 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold hover:opacity-90 transition">
+              Open Payout Calculator →
+            </a>
+          </article>
+
+          <!-- PPA -->
+          <article class="tool-card group rounded-3xl border border-green-200 dark:border-green-900/70 bg-green-50/50 dark:bg-green-950/20 p-6 shadow-sm hover:shadow-glow">
+            <div class="flex items-start justify-between">
+              <div class="w-14 h-14 rounded-2xl bg-green-100 dark:bg-green-950/70 text-green-600 dark:text-green-400 flex items-center justify-center text-2xl">📊</div>
+              <span class="px-3 py-1 rounded-full text-xs font-bold bg-green-100 dark:bg-green-950 text-green-700 dark:text-green-300">Featured</span>
+            </div>
+            <h3 class="mt-6 text-xl font-extrabold">Performance & Payout Calculator</h3>
+            <p class="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-400">
+              Analyze poultry performance and estimate payout from key farming and production metrics.
+            </p>
+            <ul class="mt-5 space-y-2 text-sm text-slate-600 dark:text-slate-300">
+              <li>✓ Performance analysis</li>
+              <li>✓ Average body weight</li>
+              <li>✓ Payout estimation</li>
+            </ul>
+            <a href="ppa.html" class="mt-7 inline-flex w-full justify-center py-3 rounded-xl bg-green-600 hover:bg-green-700 text-white font-bold transition">
+              Open Performance Calculator →
+            </a>
+          </article>
+
+          <!-- PC -->
+          <article class="tool-card group rounded-3xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 p-6 shadow-sm hover:shadow-glow md:col-span-2 xl:col-span-1">
+            <div class="flex items-start justify-between">
+              <div class="w-14 h-14 rounded-2xl bg-orange-100 dark:bg-orange-950/60 text-orange-600 dark:text-orange-400 flex items-center justify-center text-2xl">🐔</div>
+              <span class="px-3 py-1 rounded-full text-xs font-bold bg-orange-100 dark:bg-orange-950 text-orange-700 dark:text-orange-300">Operations</span>
+            </div>
+            <h3 class="mt-6 text-xl font-extrabold">Poultry Weighing & Delivery Challan</h3>
+            <p class="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-400">
+              Record bird weights, calculate totals and manage digital delivery challan information with ease.
+            </p>
+            <ul class="mt-5 space-y-2 text-sm text-slate-600 dark:text-slate-300">
+              <li>✓ Weight & quantity entry</li>
+              <li>✓ Automatic totals</li>
+              <li>✓ Digital challan workflow</li>
+            </ul>
+            <a href="pc.html" class="mt-7 inline-flex w-full justify-center py-3 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold transition">
+              Open Weighing & Challan →
+            </a>
+          </article>
+
+        </div>
+
+        <!-- APK CTA -->
+        <div class="mt-10 rounded-3xl p-6 sm:p-8 bg-gradient-to-r from-slate-900 to-slate-800 dark:from-green-950/70 dark:to-slate-900 text-white overflow-hidden relative">
+          <div class="absolute -right-20 -top-20 w-64 h-64 rounded-full bg-green-500/20 blur-3xl"></div>
+          <div class="relative flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+            <div>
+              <div class="text-green-400 font-bold text-sm">ANDROID APP</div>
+              <h3 class="mt-2 text-2xl font-extrabold">Carry PoultryMitra with you.</h3>
+              <p class="mt-2 text-slate-300 text-sm leading-6 max-w-2xl">
+                Download the APK and use your poultry tools directly from your Android phone.
+              </p>
+            </div>
+            <a href="PoultryMitra.apk" class="shrink-0 px-6 py-3.5 rounded-xl bg-green-500 hover:bg-green-400 text-slate-950 font-extrabold transition">
+              Download APK ↓
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SERVICES -->
+    <section id="services" class="py-20 sm:py-24">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-2xl mx-auto">
+          <span class="text-green-600 dark:text-green-400 font-bold text-sm uppercase tracking-widest">Services</span>
+          <h2 class="mt-3 text-3xl sm:text-4xl font-extrabold">Built around real poultry workflows.</h2>
+          <p class="mt-4 text-slate-600 dark:text-slate-400">Simple digital solutions for daily poultry farming operations.</p>
+        </div>
+
+        <div class="mt-12 grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          <div class="p-6 rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+            <div class="text-3xl">🧮</div>
+            <h3 class="mt-5 font-bold text-lg">Smart Calculations</h3>
+            <p class="mt-2 text-sm text-slate-500 dark:text-slate-400 leading-6">Reduce manual calculation work with automatic totals, averages and payout estimates.</p>
+          </div>
+          <div class="p-6 rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+            <div class="text-3xl">📦</div>
+            <h3 class="mt-5 font-bold text-lg">Digital Challans</h3>
+            <p class="mt-2 text-sm text-slate-500 dark:text-slate-400 leading-6">Record poultry delivery and weighing information in a clean digital format.</p>
+          </div>
+          <div class="p-6 rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+            <div class="text-3xl">📈</div>
+            <h3 class="mt-5 font-bold text-lg">Performance Insights</h3>
+            <p class="mt-2 text-sm text-slate-500 dark:text-slate-400 leading-6">Understand important production metrics and use them for better decisions.</p>
+          </div>
+          <div class="p-6 rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+            <div class="text-3xl">📱</div>
+            <h3 class="mt-5 font-bold text-lg">Mobile First</h3>
+            <p class="mt-2 text-sm text-slate-500 dark:text-slate-400 leading-6">Designed to work comfortably on phones, tablets, laptops and desktop computers.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section class="py-20 bg-slate-100 dark:bg-slate-900/60">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid lg:grid-cols-2 gap-12 items-center">
+          <div>
+            <span class="text-green-600 dark:text-green-400 font-bold text-sm uppercase tracking-widest">How it works</span>
+            <h2 class="mt-3 text-3xl sm:text-4xl font-extrabold">From data entry to result in a few steps.</h2>
+            <p class="mt-5 text-slate-600 dark:text-slate-400 leading-7">
+              PoultryMitra is designed around a simple principle: enter the required information,
+              let the system calculate the values, and use the result for your farming records.
+            </p>
+          </div>
+
+          <div class="space-y-4">
+            <div class="flex gap-4 p-5 rounded-2xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800">
+              <div class="w-10 h-10 shrink-0 rounded-xl bg-green-100 dark:bg-green-950 text-green-600 flex items-center justify-center font-extrabold">1</div>
+              <div><h3 class="font-bold">Choose your tool</h3><p class="text-sm text-slate-500 mt-1">Open Payout, Performance or Weighing & Challan.</p></div>
+            </div>
+            <div class="flex gap-4 p-5 rounded-2xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800">
+              <div class="w-10 h-10 shrink-0 rounded-xl bg-green-100 dark:bg-green-950 text-green-600 flex items-center justify-center font-extrabold">2</div>
+              <div><h3 class="font-bold">Enter your data</h3><p class="text-sm text-slate-500 mt-1">Add birds, weight and other required production information.</p></div>
+            </div>
+            <div class="flex gap-4 p-5 rounded-2xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800">
+              <div class="w-10 h-10 shrink-0 rounded-xl bg-green-100 dark:bg-green-950 text-green-600 flex items-center justify-center font-extrabold">3</div>
+              <div><h3 class="font-bold">Get automatic results</h3><p class="text-sm text-slate-500 mt-1">View totals, averages, performance and payout results instantly.</p></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section id="about" class="py-20 sm:py-24">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-3xl">
+          <span class="text-green-600 dark:text-green-400 font-bold text-sm uppercase tracking-widest">About PoultryMitra</span>
+          <h2 class="mt-3 text-3xl sm:text-4xl font-extrabold">A simple digital layer for poultry farming.</h2>
+          <p class="mt-5 text-slate-600 dark:text-slate-400 leading-8">
+            PoultryMitra is a collection of practical web and Android tools focused on contract poultry
+            farming workflows. The goal is to make repetitive calculations, weighing records and
+            performance-related work faster, clearer and easier to manage.
+          </p>
+        </div>
+
+        <div class="mt-10 grid md:grid-cols-3 gap-5">
+          <div class="rounded-3xl border border-slate-200 dark:border-slate-800 p-6">
+            <div class="text-green-500 font-extrabold text-2xl">01</div>
+            <h3 class="mt-4 font-bold text-lg">Simple</h3>
+            <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">No complicated dashboard. The important information stays easy to find.</p>
+          </div>
+          <div class="rounded-3xl border border-slate-200 dark:border-slate-800 p-6">
+            <div class="text-green-500 font-extrabold text-2xl">02</div>
+            <h3 class="mt-4 font-bold text-lg">Practical</h3>
+            <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">Features are focused on actual weighing, production and payout workflows.</p>
+          </div>
+          <div class="rounded-3xl border border-slate-200 dark:border-slate-800 p-6">
+            <div class="text-green-500 font-extrabold text-2xl">03</div>
+            <h3 class="mt-4 font-bold text-lg">Accessible</h3>
+            <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">Use the web tools from almost any modern browser and the Android app on mobile.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" class="py-20 bg-slate-100 dark:bg-slate-900/60">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6">
+        <div class="text-center">
+          <span class="text-green-600 dark:text-green-400 font-bold text-sm uppercase tracking-widest">FAQ</span>
+          <h2 class="mt-3 text-3xl sm:text-4xl font-extrabold">Frequently asked questions</h2>
+        </div>
+
+        <div class="mt-10 space-y-3">
+          <div class="faq-item rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 overflow-hidden">
+            <button class="faq-btn w-full flex items-center justify-between gap-4 p-5 text-left font-bold">
+              <span>What is PoultryMitra?</span><span class="faq-icon text-2xl">+</span>
+            </button>
+            <div class="faq-answer px-5 pb-5 text-sm text-slate-500 dark:text-slate-400 leading-7">
+              PoultryMitra is a digital toolkit for contract poultry farming, including payout, performance and poultry weighing/delivery challan tools.
+            </div>
+          </div>
+
+          <div class="faq-item rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 overflow-hidden">
+            <button class="faq-btn w-full flex items-center justify-between gap-4 p-5 text-left font-bold">
+              <span>Can I use these tools on a phone?</span><span class="faq-icon text-2xl">+</span>
+            </button>
+            <div class="faq-answer px-5 pb-5 text-sm text-slate-500 dark:text-slate-400 leading-7">
+              Yes. The website is responsive and designed for mobile phones, tablets and computers.
+            </div>
+          </div>
+
+          <div class="faq-item rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 overflow-hidden">
+            <button class="faq-btn w-full flex items-center justify-between gap-4 p-5 text-left font-bold">
+              <span>How do I download the Android app?</span><span class="faq-icon text-2xl">+</span>
+            </button>
+            <div class="faq-answer px-5 pb-5 text-sm text-slate-500 dark:text-slate-400 leading-7">
+              Tap any “Download APK” button on this website.
+            </div>
+          </div>
+
+          <div class="faq-item rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 overflow-hidden">
+            <button class="faq-btn w-full flex items-center justify-between gap-4 p-5 text-left font-bold">
+              <span>Do the calculators calculate values automatically?</span><span class="faq-icon text-2xl">+</span>
+            </button>
+            <div class="faq-answer px-5 pb-5 text-sm text-slate-500 dark:text-slate-400 leading-7">
+              Yes. The calculators are intended to perform the relevant calculations automatically as the required values are entered.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact" class="py-20 sm:py-24">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="rounded-[2rem] border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 sm:p-10 lg:p-12">
+          <div class="grid lg:grid-cols-2 gap-12">
+            <div>
+              <span class="text-green-600 dark:text-green-400 font-bold text-sm uppercase tracking-widest">Contact</span>
+              <h2 class="mt-3 text-3xl sm:text-4xl font-extrabold">Have a question or suggestion?</h2>
+              <p class="mt-5 text-slate-600 dark:text-slate-400 leading-7">
+                Contact details can be updated here with your real email, phone number or social links.
+              </p>
+
+              <div class="mt-8 space-y-4">
+                <!-- Replace these with your real details -->
+                <a href="mailto:poultrymitra.contact@gmail.com" class="flex items-center gap-4 p-4 rounded-2xl bg-slate-50 dark:bg-slate-950 hover:border-green-500 border border-transparent transition">
+                  <span class="w-11 h-11 rounded-xl bg-green-100 dark:bg-green-950 flex items-center justify-center">✉️</span>
+                  <div><div class="text-xs text-slate-500">Email</div><div class="font-semibold">poultrymitra.contact@gmail.com</div></div>
+                </a>
+                <a href="#" class="flex items-center gap-4 p-4 rounded-2xl bg-slate-50 dark:bg-slate-950 hover:border-green-500 border border-transparent transition">
+                  <span class="w-11 h-11 rounded-xl bg-green-100 dark:bg-green-950 flex items-center justify-center">💬</span>
+                  <div><div class="text-xs text-slate-500">WhatsApp / Support</div><div class="font-semibold">Add your support link</div></div>
+                </a>
+              </div>
+            </div>
+
+            <div class="rounded-3xl bg-slate-950 dark:bg-black text-white p-7 sm:p-8">
+              <div class="text-green-400 font-bold text-sm">QUICK ACCESS</div>
+              <h3 class="mt-2 text-2xl font-extrabold">Start using PoultryMitra</h3>
+              <p class="mt-3 text-slate-400 text-sm leading-6">
+                Choose a web tool or download the Android application.
+              </p>
+
+              <div class="mt-7 grid sm:grid-cols-2 gap-3">
+                <a href="pp.html" class="p-4 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 transition">
+                  <div class="font-bold">Payout</div><div class="text-xs text-slate-400 mt-1">Open Now -></div>
+                </a>
+                <a href="ppa.html" class="p-4 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 transition">
+                  <div class="font-bold">Performance</div><div class="text-xs text-slate-400 mt-1">Open Now -></div>
+                </a>
+                <a href="pc.html" class="p-4 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 transition">
+                  <div class="font-bold">Weighing & Challan</div><div class="text-xs text-slate-400 mt-1">Open Now -></div>
+                </a>
+                <a href="PoultryMitra.apk" class="p-4 rounded-2xl bg-green-500 hover:bg-green-400 text-slate-950 transition">
+                  <div class="font-bold">Android APK ↓</div><div class="text-xs opacity-70 mt-1">Download app</div>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <div class="flex flex-col md:flex-row justify-between gap-8">
+        <div>
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-green-600 text-white flex items-center justify-center">🐔</div>
+            <div class="font-extrabold text-lg">Poultry<span class="text-green-500">Mitra</span></div>
+          </div>
+          <p class="mt-4 text-sm text-slate-500 max-w-md leading-6">
+            Smart digital tools for contract poultry farming, performance, payout and weighing workflows.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-x-12 gap-y-3 text-sm">
+          <a href="#tools" class="hover:text-green-500">Tools</a>
+          <a href="#services" class="hover:text-green-500">Services</a>
+          <a href="#about" class="hover:text-green-500">About</a>
+          <a href="#faq" class="hover:text-green-500">FAQ</a>
+          <a href="#contact" class="hover:text-green-500">Contact</a>
+          <a href="PoultryMitra.apk" class="hover:text-green-500">Download APK</a>
+        </div>
+      </div>
+
+      <div class="mt-8 pt-6 border-t border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row justify-between gap-3 text-xs text-slate-500">
+        <p>© <span id="year"></span> PoultryMitra. All rights reserved.</p>
+        <p>Designed for a faster poultry workflow & better farmer experience || Developed by Akash.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Theme
+    const root = document.documentElement;
+    const themeBtn = document.getElementById('themeBtn');
+    const themeIcon = document.getElementById('themeIcon');
+
+    function setTheme(theme) {
+      if (theme === 'dark') {
+        root.classList.add('dark');
+        themeIcon.textContent = '☀️';
+      } else {
+        root.classList.remove('dark');
+        themeIcon.textContent = '🌙';
+      }
+      localStorage.setItem('poultry-theme', theme);
+    }
+
+    const savedTheme = localStorage.getItem('poultry-theme');
+    const preferredDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    setTheme(savedTheme || (preferredDark ? 'dark' : 'light'));
+
+    themeBtn.addEventListener('click', () => {
+      setTheme(root.classList.contains('dark') ? 'light' : 'dark');
+    });
+
+    // Mobile menu
+    const menuBtn = document.getElementById('menuBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+
+    menuBtn.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+    });
+
+    document.querySelectorAll('.mobile-link').forEach(link => {
+      link.addEventListener('click', () => mobileMenu.classList.add('hidden'));
+    });
+
+    // FAQ
+    document.querySelectorAll('.faq-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const item = btn.closest('.faq-item');
+        document.querySelectorAll('.faq-item').forEach(other => {
+          if (other !== item) other.classList.remove('open');
+        });
+        item.classList.toggle('open');
+      });
+    });
+
+    // Current year
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

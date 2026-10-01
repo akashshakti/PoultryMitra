@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#061513">
+<title>PoultryMitra</title>
+<style>
+:root{--bg:#04110f;--card:#08221c;--card2:#0d2b24;--line:#24574c;--line2:#377568;--text:#f4fffb;--muted:#91b2a9;--accent:#21d3ad;--accent2:#0fa98c;--danger:#ff6576;--gold:#f3c44f;--shadow:0 14px 34px rgba(0,0,0,.24)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html{scroll-behavior:smooth;scroll-padding-top:18px;scroll-padding-bottom:260px}body{margin:0;background:radial-gradient(circle at 20% 0%,#124238 0,#071914 30%,#04110f 76%);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;font-size:14px;padding-bottom:0}button,input{font:inherit}button{cursor:pointer;touch-action:manipulation;-webkit-user-select:none;user-select:none}
+.top{position:relative;top:auto;z-index:50;background:rgba(4,17,15,.985);border-bottom:1px solid var(--line);box-shadow:0 10px 28px rgba(0,0,0,.25)}.top-inner{max-width:1180px;margin:auto;padding:8px 12px 10px}.brand{display:flex;align-items:center;justify-content:space-between;gap:12px}.brand-left{display:flex;align-items:center;gap:11px;min-width:0}.logo{width:52px;height:52px;border-radius:15px;object-fit:cover;border:1px solid #4d9485;box-shadow:0 6px 18px rgba(0,0,0,.32);flex:0 0 auto}.brand h1{margin:0;font-size:20px;line-height:1.05;letter-spacing:-.3px}.brand small{display:block;color:var(--muted);margin-top:4px;font-size:10px}.status{padding:7px 10px;border:1px solid var(--line);border-radius:999px;color:#b9d4cd;background:#09211c;white-space:nowrap;font-size:10px;font-weight:750}.actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin-top:10px}.btn{border:1px solid var(--line2);position:relative;z-index:1;background:#0b2922;color:var(--text);padding:10px 9px;border-radius:11px;min-height:42px;font-weight:750;box-shadow:0 2px 0 rgba(255,255,255,.03) inset}.btn:active{transform:translateY(1px);filter:brightness(.95)}.btn.primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#03140f;border-color:var(--accent);font-weight:900}.btn.gold{background:#30260e;border-color:#715b22}.btn.warn{background:#351920;border-color:#7a3340}.btn.ghost{background:transparent}.btn.small{padding:7px 9px;min-height:32px;font-size:12px}
+.app{max-width:1180px;margin:auto;padding:12px}.section{background:linear-gradient(145deg,rgba(10,36,30,.98),rgba(5,24,20,.98));border:1px solid var(--line);border-radius:17px;margin:13px 0;overflow:hidden;box-shadow:var(--shadow)}.section-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:13px 14px;border-bottom:1px solid var(--line);background:linear-gradient(90deg,#10342b,#0b2922)}.section h2{font-size:15px;margin:0}.hint{color:var(--muted);font-size:10px}.form{padding:12px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.field label{display:flex;justify-content:space-between;gap:8px;color:var(--muted);font-size:10px;margin-bottom:5px}.field input{width:100%;background:#041510;border:1px solid #2d6256;color:var(--text);border-radius:11px;padding:10px;outline:none;min-height:43px}.field input:focus{border-color:var(--accent);box-shadow:0 0 0 2px rgba(33,211,173,.13)}.timebox{display:flex;gap:6px}.timebox input{flex:1;min-width:0}.time-mode{border:1px solid var(--line2);background:#0a211c;color:#b8d3cb;border-radius:10px;padding:0 9px;font-size:10px;min-width:58px}.time-mode.manual{border-color:var(--accent);color:var(--accent);background:#08251f}
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;padding:10px}.stat{background:#061a15;border:1px solid var(--line);border-radius:12px;padding:10px;min-width:0}.stat span{display:block;color:var(--muted);font-size:10px;margin-bottom:4px}.stat b{font-size:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.fill-panel{margin:0 10px 10px;border:1px solid var(--line);border-radius:14px;background:#061b16;padding:11px}.fill-title{font-weight:850;margin-bottom:8px}.fill-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.fill-grid input{width:100%;background:#041510;border:1px solid #2d6256;color:#fff;border-radius:10px;padding:10px;min-height:43px}.fill-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:8px}.fill-note{color:var(--muted);font-size:10px;line-height:1.45;margin-top:8px}.modebar{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:8px;padding:8px 10px;border:1px dashed #326c5e;border-radius:10px;color:#b9d4cd;font-size:10px}
+.gridwrap{padding:10px;overflow-x:auto;overflow-y:visible;-webkit-overflow-scrolling:touch}.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.group{border:1px solid var(--line);border-radius:13px;overflow:hidden;background:#061713;min-width:0}.gtitle{padding:9px;background:#102f27;font-weight:850;text-align:center;font-size:12px}.table{width:100%;border-collapse:collapse;table-layout:fixed}.table th,.table td{border:1px solid #234d43;padding:5px;text-align:center;box-sizing:border-box}.table th:nth-child(1),.table td:nth-child(1){width:18%}.table th:nth-child(2),.table td:nth-child(2){width:41%}.table th:nth-child(3),.table td:nth-child(3){width:41%}.table th{font-size:10px;color:#d8f4ee;background:#0b3129;font-weight:850;white-space:normal;line-height:1.2}.table td:first-child{color:#8fb6ab;font-weight:700}.table input{width:100%;min-width:0;box-sizing:border-box;background:#04110f;border:1px solid #28584e;color:#fff;border-radius:8px;padding:8px;text-align:right;outline:none;min-height:39px}.table input:focus{border-color:var(--accent);box-shadow:0 0 0 2px rgba(33,211,173,.14)}.table input.active-next{border-color:var(--gold);box-shadow:0 0 0 2px rgba(243,196,79,.14)}.sub{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:8px}.sub div{background:#09231d;border:1px solid var(--line);padding:7px;border-radius:8px;font-size:10px}
+.records{padding:10px}.record{display:flex;justify-content:space-between;align-items:center;gap:10px;border:1px solid var(--line);background:#061b16;padding:10px;border-radius:11px;margin:7px 0}.record .meta{min-width:0}.record b{display:block;font-size:12px}.record small{display:block;color:var(--muted);line-height:1.45;margin-top:3px}.record .rbtns{display:flex;gap:5px;flex-wrap:wrap;flex-shrink:0}.empty{color:var(--muted);text-align:center;padding:20px}.footer{color:#718d84;text-align:center;font-size:10px;padding:18px}.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(18px);background:#dffaf3;color:#052018;border-radius:999px;padding:10px 15px;font-weight:850;font-size:12px;opacity:0;pointer-events:none;transition:.22s;z-index:100}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.68);backdrop-filter:blur(5px);display:none;align-items:flex-end;justify-content:center;z-index:200;padding:14px}.modal-backdrop.show{display:flex}.modal{width:min(520px,100%);background:#0a2721;border:1px solid #39776a;border-radius:18px;padding:16px;box-shadow:0 24px 60px rgba(0,0,0,.45)}.modal h3{margin:0 0 7px;font-size:17px}.modal p{margin:0;color:#a9c4bc;font-size:12px;line-height:1.5}.modal-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
+.table tr.focus-row td{background:rgba(33,211,173,.055)}
+.table input:focus{scroll-margin-top:120px;scroll-margin-bottom:260px}.field input:focus{scroll-margin-top:120px;scroll-margin-bottom:260px}
+@media(max-width:560px){.top{position:sticky}.top-inner{padding-left:10px;padding-right:10px}.brand{gap:8px}.brand-left{gap:8px}.brand h1{font-size:17px}.brand small{font-size:9px}.logo{width:44px;height:44px;border-radius:13px}.status{font-size:8px;padding:5px 7px}.actions{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}.btn{min-height:44px;font-size:11px;padding:9px 6px}.app{padding-top:10px}}
+@media(max-width:900px){.actions{grid-template-columns:repeat(3,minmax(0,1fr))}.form{grid-template-columns:repeat(2,minmax(0,1fr))}.stats{grid-template-columns:repeat(3,1fr)}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.top-inner{padding:9px 10px 10px}.app{padding:8px}.brand h1{font-size:18px}.logo{width:46px;height:46px}.status{font-size:9px;padding:6px 8px}.actions{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}.btn{min-height:41px;font-size:11px;padding:9px 7px}.form{grid-template-columns:1fr 1fr;gap:8px}.field input{min-height:41px;padding:9px 8px}.stats{grid-template-columns:repeat(2,1fr)}.stat b{font-size:16px}.fill-actions{grid-template-columns:1fr}.grid{grid-template-columns:1fr;gap:9px;width:100%;min-width:0}.section-head{padding:11px 12px}.record{align-items:flex-start;flex-direction:column}.record .rbtns{width:100%}.record .rbtns .btn{flex:1}.table th{font-size:10px}.table input{min-height:42px;font-size:16px}.table th:nth-child(1),.table td:nth-child(1){width:18%}.table th:nth-child(2),.table td:nth-child(2){width:41%}.table th:nth-child(3),.table td:nth-child(3){width:41%}.modal-actions{grid-template-columns:1fr 1fr}}
+
+/* Android WebView-safe weighment grid: div-based rows avoid table reflow/collapse on mobile. */
+.table{width:100%;display:block}
+.table-head,.weight-row{display:grid;grid-template-columns:42px minmax(0,1fr) minmax(0,1fr);width:100%}
+.table-head>div,.weight-row>div{border:1px solid #234d43;padding:5px;text-align:center;min-width:0}
+.table-head>div{font-size:10px;color:#b9ccc7;background:#0b251f;font-weight:700}
+.weight-row{min-height:50px}
+.weight-row>div:first-child{color:#8fb6ab;font-weight:700;display:flex;align-items:center;justify-content:center}
+.weight-row .row-input{width:100%;min-width:0;display:block;background:#04110f;border:1px solid #28584e;color:#fff;border-radius:8px;padding:8px;text-align:right;outline:none;min-height:39px}
+.weight-row .row-input:focus{border-color:var(--accent);box-shadow:0 0 0 2px rgba(33,211,173,.14)}
+.weight-row.focus-row>div{background:rgba(33,211,173,.055)}
+.weight-row .row-input.active-next{border-color:var(--gold);box-shadow:0 0 0 2px rgba(243,196,79,.14)}
+@media(max-width:560px){
+  .weight-row{min-height:54px}
+  .weight-row .row-input{min-height:44px;font-size:16px}
+  .table-head>div{font-size:10px}
+}
+
+@media print{body{background:#fff;color:#000}.top,.no-print,.actions,.footer,.toast,.modal-backdrop{display:none!important}.app{max-width:none;padding:0}.section{border:1px solid #111;box-shadow:none;break-inside:avoid}.section-head{background:#eee;color:#000}.form input,.table input{color:#000;background:#fff;border:0}.gridwrap{overflow:visible}.grid{grid-template-columns:repeat(2,1fr);gap:4px}.group{border:1px solid #111}.table-head>div,.weight-row>div{border:1px solid #111;color:#000;padding:3px}.weight-row .row-input{color:#000;background:#fff;border:0}.stats{color:#000}.stat{border:1px solid #111;background:#fff}.stat span{color:#333}.logo{border:0;box-shadow:none}}
+</style>
+
+<body>
+<div class="top"><div class="top-inner">
+  <div class="brand">
+    <div class="brand-left"><img class="logo" src="poultrymitra_logo_new.png" alt="PoultryMitra logo"><div><h1>PoultryMitra</h1><small>Poultry Weighing & Delivery Challan</small></div></div>
+    <div id="status" class="status">Draft</div>
+  </div>
+  <div class="actions">
+    <button id="newBtn" class="btn primary" type="button">＋ New Challan</button>
+    <button id="saveBtn" class="btn" type="button">💾 Save</button>
+    <button id="copyBtn" class="btn gold" type="button">📋 Copy Sheet</button>
+    <button id="shareBtn" class="btn" type="button">↗ Share</button>
+    <button id="printBtn" class="btn" type="button">⬇ PDF / Print</button>
+    <button id="clearBtn" class="btn warn" type="button">🧹 Clear</button>
+  </div>
+</div></div>
+
+<main class="app" id="sheet">
+<section class="section">
+  <div class="section-head"><h2>📋 Challan Details</h2><span class="hint">Auto-saved on this phone</span></div>
+  <div class="form">
+    <div class="field"><label>Trader Name</label><input id="trader" placeholder="Enter trader name" autocomplete="off" enterkeyhint="next" data-form-nav="true"></div>
+    <div class="field"><label>Farm Name</label><input id="farm" placeholder="Enter farm name" autocomplete="off" enterkeyhint="next" data-form-nav="true"></div>
+    <div class="field"><label>Date</label><input id="date" type="date" enterkeyhint="next" data-form-nav="true"></div>
+    <div class="field"><label>Vehicle No.</label><input id="vehicle" placeholder="UP XX XX XXXX" autocomplete="off" enterkeyhint="next" data-form-nav="true"></div>
+    <div class="field"><label>Driver Name</label><input id="driver" placeholder="Driver name" autocomplete="off" enterkeyhint="next" data-form-nav="true"></div>
+    <div class="field"><label>DC No.</label><input id="dc" placeholder="Delivery challan no." autocomplete="off" enterkeyhint="next" data-form-nav="true"></div>
+    <div class="field"><label>Rate (₹ / kg)</label><input id="rate" type="number" step="0.01" inputmode="decimal" placeholder="0" enterkeyhint="next" data-form-nav="true"></div>
+    <div class="field"><label>Supervisor Name</label><input id="supervisor" placeholder="Supervisor name" autocomplete="off" enterkeyhint="next" data-form-nav="true"></div>
+    <div class="field"><label>Starting Time <span id="startLabel">Auto</span></label><div class="timebox"><input id="starting" type="text" placeholder="09:30 AM" enterkeyhint="next" data-form-nav="true"><button id="startMode" class="time-mode" type="button">Auto</button></div></div>
+    <div class="field"><label>Closing Time <span id="closeLabel">Auto</span></label><div class="timebox"><input id="closing" type="text" placeholder="11:45 AM" enterkeyhint="done" data-form-nav="true"><button id="closeMode" class="time-mode" type="button">Auto</button></div></div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-head"><h2>📊 Live Summary</h2><span class="hint" id="summaryHint">0 rows filled</span></div>
+  <div class="stats">
+    <div class="stat"><span>Total Birds</span><b id="grandBirds">0</b></div>
+    <div class="stat"><span>Total Weight (kg)</span><b id="grandWeight">0.000</b></div>
+    <div class="stat"><span>Average Weight / Bird</span><b id="avg">0.000</b></div>
+    <div class="stat"><span>Total Amount (₹)</span><b id="amount">0.00</b></div>
+    <div class="stat"><span>Rows Filled</span><b id="filled">0 / 84</b></div>
+  </div>
+  <div class="fill-panel no-print">
+    <div class="fill-title">⚡ Smart Auto-Fill</div>
+    <div class="fill-grid">
+      <input id="fillCount" type="number" min="0" step="1" inputmode="numeric" placeholder="Birds per row (e.g. 12)" enterkeyhint="next" data-form-nav="true">
+      <input id="fillRows" type="number" min="1" max="84" step="1" inputmode="numeric" placeholder="Number of rows (e.g. 84)" enterkeyhint="done" data-form-nav="true">
+    </div>
+    <div class="fill-actions">
+      <button id="autoFillBtn" class="btn primary" type="button">⚡ Auto-fill Birds + Rows</button>
+      <button id="weightModeBtn" class="btn" type="button">⌨ Start Weight Entry</button>
+    </div>
+    <div class="modebar"><span id="entryModeText">Normal entry mode</span><button id="exitModeBtn" class="btn small ghost" type="button">Exit mode</button></div>
+    <div class="fill-note">Auto-fill ke baad Birds values prefilled rahengi. <b>Keyboard Enter / Next on Weight → next Weight</b>. Manual mode mein <b>Enter / Next on Birds → same row Weight</b>.</div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-head"><h2>⚖ Weighment Details — 84 Rows</h2><span class="hint">Mobile: Enter / Next supported</span></div>
+  <div class="gridwrap"><div class="grid" id="grid"></div></div>
+</section>
+
+<section class="section no-print">
+  <div class="section-head"><h2>🗂 Saved Challans</h2><span class="hint">Stored locally on this phone</span></div>
+  <div class="records" id="records"></div>
+</section>
+<div class="footer">PoultryMitra • Offline-first • Local data storage • 84-row challan • Developed by @kash</div>
+</main>
+<div id="toast" class="toast"></div>
+<div id="modalBackdrop" class="modal-backdrop" aria-hidden="true">
+  <div class="modal" role="dialog" aria-modal="true">
+    <h3 id="modalTitle">Confirm</h3><p id="modalText"></p>
+    <div class="modal-actions"><button id="modalCancel" class="btn" type="button">Cancel</button><button id="modalOk" class="btn primary" type="button">Continue</button></div>
+  </div>
+</div>
+<script>
+const KEY='poultrymitra_records_v3', DRAFT='poultrymitra_draft_v3', TOTAL_ROWS=84;
+let state=newState(), weightMode=false, startManual=false, closeManual=false, modalAction=null;
+function newState(){return {id:null,trader:'',farm:'',date:'',vehicle:'',driver:'',dc:'',rate:'',supervisor:'',starting:'',closing:'',startManual:false,closeManual:false,rows:Array.from({length:TOTAL_ROWS},()=>({birds:'',weight:''}))};}
+function nowText(){return new Date().toLocaleString('en-IN',{year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:true});}
+function today(){const d=new Date(),y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');return `${y}-${m}-${day}`;}
+function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(window.__toast);window.__toast=setTimeout(()=>t.classList.remove('show'),1800);}
+function setStatus(text){document.getElementById('status').textContent=text;}
+function collectFields(){['trader','farm','date','vehicle','driver','dc','rate','supervisor','starting','closing'].forEach(id=>state[id]=document.getElementById(id).value.trim());state.startManual=startManual;state.closeManual=closeManual;}
+function fillFields(){['trader','farm','date','vehicle','driver','dc','rate','supervisor','starting','closing'].forEach(id=>document.getElementById(id).value=state[id]||'');startManual=!!state.startManual;closeManual=!!state.closeManual;updateTimeButtons();}
+function autosave(){collectFields();localStorage.setItem(DRAFT,JSON.stringify(state));setStatus('Auto-saved');}
+function safeRows(){if(!Array.isArray(state.rows))state.rows=[];while(state.rows.length<TOTAL_ROWS)state.rows.push({birds:'',weight:''});if(state.rows.length>TOTAL_ROWS)state.rows=state.rows.slice(0,TOTAL_ROWS);state.rows=state.rows.map(r=>({birds:r?.birds??'',weight:r?.weight??''}));}
+function renderGrid(){safeRows();const grid=document.getElementById('grid');grid.innerHTML='';for(let g=0;g<4;g++){const group=document.createElement('div');group.className='group';const start=g*21+1,end=start+20;group.innerHTML=`<div class="gtitle">Rows ${start}–${end}</div><table class="table"><thead><tr><th>Sr.</th><th>No. of Birds</th><th>Birds Weight (kg)</th></tr></thead><tbody></tbody></table><div class="sub"><div>Birds Total: <b id="gb${g}">0</b></div><div>Weight Total: <b id="gw${g}">0.000</b></div></div>`;const tb=group.querySelector('tbody');for(let i=start-1;i<end;i++){const tr=document.createElement('tr');tr.innerHTML=`<td>${i+1}</td><td><input id="b${i}" type="number" min="0" step="1" inputmode="numeric" enterkeyhint="next" data-form-nav="true" value="${esc(state.rows[i].birds)}" data-i="${i}" data-type="birds" aria-label="Birds row ${i+1}"></td><td><input id="w${i}" type="number" min="0" step="0.01" inputmode="decimal" enterkeyhint="next" data-form-nav="true" value="${esc(state.rows[i].weight)}" data-i="${i}" data-type="weight" aria-label="Weight row ${i+1}"></td>`;tb.appendChild(tr);}grid.appendChild(group);}calc();bindGridInputs();}
+function bindGridInputs(){document.querySelectorAll('.table input').forEach(el=>{el.addEventListener('input',()=>rowInput(el));el.addEventListener('keydown',e=>nav(e,el));el.addEventListener('keyup',e=>{if(e.key==='Enter') e.preventDefault();});});}
+function rowInput(el){const i=Number(el.dataset.i),type=el.dataset.type;state.rows[i][type]=el.value;calc();localStorage.setItem(DRAFT,JSON.stringify(state));setStatus('Auto-saved');}
+function calc(){let gb=0,gw=0,filled=0;for(let g=0;g<4;g++){let b=0,w=0;for(let i=g*21;i<g*21+21;i++){b+=Number(state.rows[i].birds)||0;w+=Number(state.rows[i].weight)||0;if(state.rows[i].birds!==''||state.rows[i].weight!=='')filled++;}gb+=b;gw+=w;const eb=document.getElementById('gb'+g),ew=document.getElementById('gw'+g);if(eb)eb.textContent=b;if(ew)ew.textContent=w.toFixed(3);}document.getElementById('grandBirds').textContent=gb;document.getElementById('grandWeight').textContent=gw.toFixed(3);document.getElementById('avg').textContent=(gb?gw/gb:0).toFixed(3);document.getElementById('amount').textContent=(gw*(Number(state.rate)||0)).toFixed(2);document.getElementById('filled').textContent=`${filled} / ${TOTAL_ROWS}`;document.getElementById('summaryHint').textContent=`${filled} row${filled===1?'':'s'} filled`;}
+function loadDraft(){let raw=localStorage.getItem(DRAFT)||localStorage.getItem('poultrymitra_draft_v2')||localStorage.getItem('poultrymitra_draft_v1');if(raw){try{state=JSON.parse(raw)}catch(e){state=newState();}}safeRows();if(!state.date)state.date=today();if(!state.starting)state.starting=nowText();fillFields();renderGrid();if(!localStorage.getItem(KEY)){const old=localStorage.getItem('poultrymitra_records_v2')||localStorage.getItem('poultrymitra_records_v1');if(old)localStorage.setItem(KEY,old);}}
+function resetState(){state=newState();state.date=today();state.starting=nowText();startManual=false;closeManual=false;weightMode=false;}
+function openModal(title,text,okText,action){document.getElementById('modalTitle').textContent=title;document.getElementById('modalText').textContent=text;document.getElementById('modalOk').textContent=okText||'Continue';document.getElementById('modalBackdrop').classList.add('show');document.getElementById('modalBackdrop').setAttribute('aria-hidden','false');modalAction=action;setTimeout(()=>document.getElementById('modalCancel').focus(),40);}
+function closeModal(){document.getElementById('modalBackdrop').classList.remove('show');document.getElementById('modalBackdrop').setAttribute('aria-hidden','true');modalAction=null;}
+function newChallan(){openModal('Start a new challan?','Current draft will be saved, then a completely blank challan will open. Saved challans will not be deleted.','New Challan',()=>{collectFields();localStorage.setItem(DRAFT,JSON.stringify(state));resetState();fillFields();renderGrid();localStorage.setItem(DRAFT,JSON.stringify(state));setStatus('New challan');toast('New challan ready');window.scrollTo({top:0,behavior:'smooth'});});}
+function clearAll(){openModal('Clear current challan?','All fields and weight entries of the current challan will be cleared. Saved challans stay safe.','Clear',()=>{resetState();fillFields();renderGrid();localStorage.setItem(DRAFT,JSON.stringify(state));setStatus('Cleared');toast('Current challan cleared');window.scrollTo({top:0,behavior:'smooth'});});}
+function saveRecord(){collectFields();if(!state.closing)state.closing=nowText();document.getElementById('closing').value=state.closing;if(!state.id)state.id='PM-'+Date.now();const list=JSON.parse(localStorage.getItem(KEY)||'[]');const copy=JSON.parse(JSON.stringify(state));const idx=list.findIndex(x=>x.id===state.id);if(idx>=0)list[idx]=copy;else list.unshift(copy);localStorage.setItem(KEY,JSON.stringify(list));localStorage.setItem(DRAFT,JSON.stringify(state));renderRecords();setStatus('Saved ✓');toast('Challan saved successfully');}
+function summaryTotals(s=state){let b=0,w=0;(s.rows||[]).forEach(r=>{b+=Number(r.birds)||0;w+=Number(r.weight)||0});return {b,w,avg:b?w/b:0,amount:w*(Number(s.rate)||0)};}
+function getSummary(s=state){const t=summaryTotals(s);const rows=s.rows.map((r,i)=>`${i+1}. ${r.birds||''} birds — ${r.weight||''} kg`).filter(x=>!x.endsWith('—  kg')).join('\n');return `PoultryMitra Challan\nDate: ${s.date}\nTrader: ${s.trader}\nFarm: ${s.farm}\nVehicle: ${s.vehicle}\nDriver: ${s.driver}\nDC No: ${s.dc}\nRate: ₹${s.rate||0}\nSupervisor: ${s.supervisor}\nStarting: ${s.starting||'-'}\nClosing: ${s.closing||'-'}\nTotal Birds: ${t.b}\nTotal Weight: ${t.w.toFixed(3)} kg\nAverage: ${t.avg.toFixed(3)} kg\nAmount: ₹${t.amount.toFixed(2)}\n\nWeighment:\n${rows}`;}
+function copySheet(){collectFields();const text=getSummary();if(window.AndroidBridge&&AndroidBridge.copyText){AndroidBridge.copyText(text);setStatus('Copied ✓');toast('Challan copied');return;}if(navigator.clipboard?.writeText){navigator.clipboard.writeText(text).then(()=>{setStatus('Copied ✓');toast('Challan copied');}).catch(()=>fallbackCopy(text));}else fallbackCopy(text);}
+function fallbackCopy(text){const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.focus();ta.select();try{document.execCommand('copy');toast('Challan copied');}catch(e){toast('Copy failed — use Share');}ta.remove();}
+function shareSheet(){collectFields();const text=getSummary();if(window.AndroidBridge&&AndroidBridge.shareText){AndroidBridge.shareText('PoultryMitra Challan',text);toast('Share sheet opened');return;}if(navigator.share)navigator.share({title:'PoultryMitra Challan',text}).catch(()=>{});else fallbackCopy(text);}
+function __buildPdfPayload(){collectFields();if(window.AndroidBridge&&AndroidBridge.downloadPdf){AndroidBridge.downloadPdf(JSON.stringify(state));return true;}return false;}
+function printSheet(){collectFields();setStatus('Creating compact PDF…');if(!__buildPdfPayload())window.print();}
+window.onPdfSaved=function(){setStatus('PDF saved ✓');toast('PDF downloaded to Downloads/PoultryMitra');};
+window.onPdfFailed=function(){setStatus('PDF failed');toast('PDF create nahi ho saka');};
+function autoFillBirds(){const n=document.getElementById('fillCount').value.trim(),rows=Number(document.getElementById('fillRows').value);if(n===''){toast('Birds per row enter karein');document.getElementById('fillCount').focus();return;}if(!Number.isInteger(Number(n))||Number(n)<0){toast('Birds per row valid number hona chahiye');return;}if(!Number.isInteger(rows)||rows<1||rows>TOTAL_ROWS){toast('Rows 1–84 ke beech honi chahiye');return;}for(let i=0;i<TOTAL_ROWS;i++)if(i>=rows){state.rows[i].birds='';state.rows[i].weight='';}for(let i=0;i<rows;i++)state.rows[i].birds=n;weightMode=true;autosave();renderGrid();setTimeout(()=>focusWeight(0),120);setStatus(`${rows} rows filled • Weight mode`);document.getElementById('entryModeText').textContent='⚡ Auto-fill active: Enter / Next = next weight';toast(`${rows} rows auto-filled`);}
+function focusField(target){if(!target)return;target.focus({preventScroll:true});try{if(target.type!=='date')target.select()}catch(e){}const reveal=()=>{try{target.scrollIntoView({block:'center',inline:'nearest',behavior:'smooth'});window.scrollBy(0,-28)}catch(e){}};reveal();setTimeout(reveal,80);setTimeout(reveal,220);setTimeout(reveal,450);setTimeout(reveal,800);target.classList.add('active-next');setTimeout(()=>target.classList.remove('active-next'),900);}
+function focusWeight(i){const target=document.getElementById('w'+i);if(!target)return;const row=target.closest('.weight-row');document.querySelectorAll('.weight-row.focus-row').forEach(r=>r.classList.remove('focus-row'));if(row)row.classList.add('focus-row');focusField(target);}
+function focusBirds(i){const target=document.getElementById('b'+i);if(!target)return;const row=target.closest('.weight-row');document.querySelectorAll('.weight-row.focus-row').forEach(r=>r.classList.remove('focus-row'));if(row)row.classList.add('focus-row');focusField(target);}
+function weightEntryMode(){weightMode=true;document.getElementById('entryModeText').textContent='⌨ Weight mode: Enter / Next = next weight';const first=[...document.querySelectorAll('.table input[data-type="weight"]')].find(x=>document.getElementById('b'+x.dataset.i)?.value!=='');focusWeight(first?Number(first.dataset.i):0);setStatus('Weight Entry Mode');}
+function stopWeightMode(){weightMode=false;document.getElementById('entryModeText').textContent='Normal entry mode';document.querySelectorAll('.weight-row.focus-row').forEach(r=>r.classList.remove('focus-row'));setStatus('Normal mode');}
+function nav(e,el){if(e.key!=='Enter'&&e.key!=='NumpadEnter'&&e.key!=='Tab')return;e.preventDefault();e.stopPropagation();const i=Number(el.dataset.i),type=el.dataset.type;if(type==='birds'){state.rows[i].birds=el.value.trim();autosave();calc();focusWeight(i);return;}if(type==='weight'){state.rows[i].weight=el.value.trim();autosave();calc();if(weightMode){let next=i+1;while(next<TOTAL_ROWS && state.rows[next].birds==='')next++;if(next<TOTAL_ROWS)focusWeight(next);else{setStatus('Weight Entry Complete');toast('All filled weights complete');}}else if(i<TOTAL_ROWS-1){focusBirds(i+1);}else{setStatus('Weight Entry Complete');toast('All 84 rows complete');}return;}}
+function navForm(e,el){if(e.key!=='Enter'&&e.key!=='NumpadEnter')return;e.preventDefault();e.stopPropagation();handleNext(el);}
+function handleNext(el){if(!el)return;if(el.matches('.form input[data-form-nav="true"]')){const fields=[...document.querySelectorAll('.form input[data-form-nav="true"]')];const idx=fields.indexOf(el);const next=fields[idx+1];if(next)focusField(next);else focusBirds(0);return;}if(el.matches('.table input[data-form-nav="true"]')){nav({key:'Enter',preventDefault:()=>{},stopPropagation:()=>{}},el);}}
+window.__androidNext=function(){const el=document.activeElement;if(el&&el.matches&&el.matches('input[data-form-nav="true"]')){handleNext(el);return true}return false;}
+window.__buildPdfPayload=__buildPdfPayload;
+function toggleTimeMode(which){if(which==='starting'){startManual=!startManual;if(!startManual){state.starting=nowText();document.getElementById('starting').value=state.starting;}}else{closeManual=!closeManual;if(!closeManual){state.closing=nowText();document.getElementById('closing').value=state.closing;}}state.startManual=startManual;state.closeManual=closeManual;updateTimeButtons();autosave();}
+function updateTimeButtons(){const sm=document.getElementById('startMode'),cm=document.getElementById('closeMode');sm.textContent=startManual?'Manual':'Auto';cm.textContent=closeManual?'Manual':'Auto';sm.classList.toggle('manual',startManual);cm.classList.toggle('manual',closeManual);document.getElementById('starting').readOnly=!startManual;document.getElementById('closing').readOnly=!closeManual;document.getElementById('startLabel').textContent=startManual?'Manual':'Auto';document.getElementById('closeLabel').textContent=closeManual?'Manual':'Auto';}
+function loadRecord(id){const list=JSON.parse(localStorage.getItem(KEY)||'[]'),x=list.find(a=>a.id===id);if(!x)return;state=JSON.parse(JSON.stringify(x));safeRows();fillFields();renderGrid();weightMode=false;setStatus('Record loaded');toast('Saved challan opened');window.scrollTo({top:0,behavior:'smooth'});}
+function deleteRecord(id){openModal('Delete saved challan?','This saved challan will be permanently removed from this phone.','Delete',()=>{const list=JSON.parse(localStorage.getItem(KEY)||'[]').filter(x=>x.id!==id);localStorage.setItem(KEY,JSON.stringify(list));renderRecords();toast('Saved challan deleted');});}
+function renderRecords(){const list=JSON.parse(localStorage.getItem(KEY)||'[]'),box=document.getElementById('records');if(!list.length){box.innerHTML='<div class="empty">No saved challans yet.</div>';return}box.innerHTML=list.map(x=>{const t=summaryTotals(x);return `<div class="record"><div class="meta"><b>${esc(x.date||'No date')} • ${esc(x.trader||'No trader')}</b><small>${esc(x.vehicle||'No vehicle')} • ${esc(x.dc||'No DC')}<br>${t.b} birds • ${t.w.toFixed(3)} kg • ₹${t.amount.toFixed(2)}<br>Start: ${esc(x.starting||'-')} • Close: ${esc(x.closing||'-')}</small></div><div class="rbtns"><button class="btn small open-record" type="button" data-id="${esc(x.id)}">Open</button><button class="btn small warn delete-record" type="button" data-id="${esc(x.id)}">Delete</button></div></div>`}).join('');box.querySelectorAll('.open-record').forEach(b=>b.addEventListener('click',()=>loadRecord(b.dataset.id)));box.querySelectorAll('.delete-record').forEach(b=>b.addEventListener('click',()=>deleteRecord(b.dataset.id)));}
+function bindButtons(){document.getElementById('newBtn').addEventListener('click',newChallan);document.getElementById('saveBtn').addEventListener('click',saveRecord);document.getElementById('copyBtn').addEventListener('click',copySheet);document.getElementById('shareBtn').addEventListener('click',shareSheet);document.getElementById('printBtn').addEventListener('click',printSheet);document.getElementById('clearBtn').addEventListener('click',clearAll);document.getElementById('autoFillBtn').addEventListener('click',autoFillBirds);document.getElementById('weightModeBtn').addEventListener('click',weightEntryMode);document.getElementById('exitModeBtn').addEventListener('click',stopWeightMode);document.getElementById('startMode').addEventListener('click',()=>toggleTimeMode('starting'));document.getElementById('closeMode').addEventListener('click',()=>toggleTimeMode('closing'));document.getElementById('modalCancel').addEventListener('click',closeModal);document.getElementById('modalOk').addEventListener('click',()=>{const fn=modalAction;closeModal();if(fn)fn();});document.getElementById('modalBackdrop').addEventListener('click',e=>{if(e.target.id==='modalBackdrop')closeModal();});}
+document.addEventListener('input',e=>{if(e.target.id==='rate'){state.rate=e.target.value;calc();autosave();return;}if(e.target.closest('.form'))autosave();});
+document.addEventListener('keydown',e=>{if(e.target?.matches?.('.form input[data-form-nav="true"]')){navForm(e,e.target);return;}if(e.key==='Escape'){if(document.getElementById('modalBackdrop').classList.contains('show'))closeModal();else if(weightMode)stopWeightMode();}});
+window.addEventListener('beforeunload',()=>{try{collectFields();localStorage.setItem(DRAFT,JSON.stringify(state));}catch(e){}});
+if(window.visualViewport){visualViewport.addEventListener('resize',()=>{const a=document.activeElement;if(a&&a.matches&&a.matches('input[data-form-nav="true"]'))setTimeout(()=>a.scrollIntoView({block:'center',behavior:'smooth'}),80);});}
+bindButtons();loadDraft();renderRecords();
+</script>
+</body>
+</html>
