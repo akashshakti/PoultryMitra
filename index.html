@@ -6,6 +6,7 @@
   <meta name="theme-color" content="#0b1220" />
   <meta name="description" content="PoultryMitra - Smart digital tools for contract poultry farming, performance & payout calculation, poultry weighing and delivery challan management." />
   <title>PoultryMitra | Smart Poultry Farming Tools</title>
+  <meta name="google-site-verification" content="Hefi5bFAF8GwyJhJoXh0xsPIMWvSzqWVDGuDyxZKHuM" />
 
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -106,7 +107,7 @@
           </a>
 
           <button id="menuBtn" class="lg:hidden w-10 h-10 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center justify-center">
-            <span class="text-xl">☰</span>
+            <span id="menuIcon" class="text-xl leading-none">☰</span>
           </button>
         </div>
       </div>
@@ -536,15 +537,52 @@
 
     // Mobile menu
     const menuBtn = document.getElementById('menuBtn');
+    const menuIcon = document.getElementById('menuIcon');
     const mobileMenu = document.getElementById('mobileMenu');
+    const mobileLinks = document.querySelectorAll('.mobile-link');
+    // Close ka function
+    function closeMenu() {
+      menuIcon.textContent = '☰';
+      mobileMenu.classList.add('hidden');
+    }
+  
+    // Open ka function
+    function openMenu() {
+      menuIcon.textContent = '✕';
+      mobileMenu.classList.remove('hidden');
+    }
 
-    menuBtn.addEventListener('click', () => {
-      mobileMenu.classList.toggle('hidden');
+    // Toggle menu on button click
+    menuBtn.addEventListener('click', (e) => {
+      e.stopPropagation(); // Prevent click from propagating to document
+      if (menuIcon.textContent === '☰') {
+        openMenu();
+      } else {
+        closeMenu();
+      }
+    });
+    
+    // Konuo link par click ho to menu close ho 
+    mobileLinks.forEach((link) => {
+      link.addEventListener("click", () => {
+        closeMenu();
+      });
     });
 
-    document.querySelectorAll('.mobile-link').forEach(link => {
-      link.addEventListener('click', () => mobileMenu.classList.add('hidden'));
+    // Close menu when clicking outside
+    document.addEventListener("click", (event) => {
+      const isClickInsideMenu = mobileMenu.contains(event.target);
+      const isClickOnButton = menuBtn.contains(event.target);
+      
+      // Agar click menu ke andar nahi hua to menu close kar do
+      if (!isClickInsideMenu && !isClickOnButton && !mobileMenu.classList.contains('hidden')) {
+        closeMenu();
+      }
     });
+
+    // document.querySelectorAll('.mobile-link').forEach(link => {
+    //   link.addEventListener('click', () => mobileMenu.classList.add('hidden'));
+    // });
 
     // FAQ
     document.querySelectorAll('.faq-btn').forEach(btn => {
